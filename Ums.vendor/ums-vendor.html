@@ -1,0 +1,3517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UMS Vendor Tracker - Complete Vendor & Password Management System">
+    <meta name="theme-color" content="#1e3a8a">
+    <title>UMS Vendor Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0b5ea8;
+            --secondary-blue: #083d77;
+            --accent-red: #e63946;
+            --accent-orange: #f77f00;
+            --accent-green: #06d6a0;
+            --light-bg: #f5f7fa;
+            --white: #ffffff;
+            --text-dark: #0f1724;
+            --text-light: #6b7280;
+            --border-color: #e6eef7;
+            --shadow-sm: 0 2px 8px rgba(11, 94, 168, 0.06);
+            --shadow-md: 0 4px 16px rgba(11, 94, 168, 0.08);
+            --shadow-lg: 0 8px 32px rgba(11, 94, 168, 0.12);
+            --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8ecf1 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ==================== SCROLLBAR ==================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-blue);
+        }
+
+        /* ==================== LOGIN PAGE ==================== */
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+        }
+
+        .login-box {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 50px 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo img {
+            width: 80px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-red);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--accent-red), #e94560);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .login-error {
+            background: rgba(233, 69, 96, 0.1);
+            color: var(--accent-red);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        /* ==================== MAIN LAYOUT ==================== */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8ecf1 100%);
+        }
+
+        .layout-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            background: var(--white);
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            color: var(--text-dark);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-icon {
+            width: 36px;
+            height: 36px;
+            background: #efefef;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dedede;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .header-logo img {
+            width: 40px;
+            height: auto;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary-blue);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-title-sub {
+            font-size: 10px;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .notification-bell {
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .notification-bell:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-orange);
+            color: var(--white);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--accent-red);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: var(--accent-red);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 0;
+            overflow-y: auto;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            margin: 4px 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(11,94,168,0.06);
+            color: var(--primary-blue);
+            padding-left: 28px;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(11,94,168,0.08), transparent);
+            color: var(--primary-blue);
+            border-left-color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* ==================== CONTENT AREA ==================== */
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ==================== STATS GRID ==================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-orange));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-red);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--accent-red);
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: var(--accent-green);
+        }
+
+        /* ==================== CARDS ==================== */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(11, 94, 168, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--light-bg);
+            color: var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background: var(--accent-green);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(6, 214, 160, 0.4);
+        }
+
+        /* ==================== TABLE ==================== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .data-table thead {
+            background: var(--light-bg);
+        }
+
+        .data-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .data-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--light-bg);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(6, 214, 160, 0.2);
+            color: var(--accent-green);
+        }
+
+        .badge-warning {
+            background: rgba(247, 127, 0, 0.2);
+            color: var(--accent-orange);
+        }
+
+        .badge-danger {
+            background: rgba(233, 69, 96, 0.2);
+            color: var(--accent-red);
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .modal-close {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            background: none;
+            border: none;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-close:hover {
+            color: var(--accent-red);
+            transform: rotate(90deg);
+        }
+
+        /* Calendar Picker Styles */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .calendar-header button {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .calendar-header h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 10px 0;
+            font-size: 12px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .calendar-day:hover {
+            border-color: var(--primary-blue);
+            background: #e8f1f9;
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-light);
+            background: var(--light-bg);
+            cursor: not-allowed;
+        }
+
+        .calendar-day.selected {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .calendar-day.in-range {
+            background: #cce5ff;
+            border-color: var(--primary-blue);
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            margin-bottom: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* ==================== FORM ==================== */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            background: var(--light-bg);
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-red);
+        }
+
+        /* ==================== CHARTS ==================== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: var(--white);
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .chart-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* ==================== NOTIFICATION ==================== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--white);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            max-width: 400px;
+            animation: slideInRight 0.4s ease-out;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.error {
+            border-left-color: var(--accent-red);
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* ==================== DARK MODE ==================== */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        }
+
+        body.dark-mode .sidebar,
+        body.dark-mode .card,
+        body.dark-mode .modal-content,
+        body.dark-mode .login-box {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+
+        body.dark-mode .text-dark {
+            color: #ffffff;
+        }
+
+        body.dark-mode .text-light {
+            color: #aaaaaa;
+        }
+
+        body.dark-mode .border-color {
+            border-color: #444444;
+        }
+
+        body.dark-mode .data-table th {
+            background: #1a1a1a;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .layout-wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px 0;
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .nav-item {
+                padding: 12px 20px;
+                white-space: nowrap;
+            }
+
+            .content-area {
+                padding: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+                max-width: 90vw;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* ==================== UTILITIES ==================== */
+        .hidden {
+            display: none !important;
+        }
+
+        .admin-only {
+            display: none !important;
+        }
+
+        .admin-only.visible {
+            display: block !important;
+        }
+
+        .admin-only.visible.flex {
+            display: flex !important;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--light-bg);
+            border-top-color: var(--accent-red);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN PAGE -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-logo">
+                <img src="https://umskenya.com/wp-content/uploads/2024/07/umslogo-e1722428157937-120x64.png" alt="UMS Logo">
+                <div class="login-title">UMS Kenya</div>
+                <div class="login-subtitle">UMS Vendor System</div>
+            </div>
+            <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" id="loginUsername" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group" style="position:relative;">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                    <button type="button" onclick="toggleLoginPassword()" style="position:absolute; right:12px; top:38px; background:none; border:none; font-size:16px; cursor:pointer;">👁️</button>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+            <div style="margin-top: 20px; text-align: center; color: var(--text-light); font-size: 12px;">
+                Demo: admin/admin123 or user/user123
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="main-container" id="mainApp">
+        <div class="layout-wrapper">
+            <!-- SIDEBAR -->
+            <div class="sidebar">
+                <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-page="issues" onclick="showPage('issues')">
+                    <span class="nav-icon">🔴</span>
+                    <span>Vendor Issues</span>
+                </div>
+                <div class="nav-item" data-page="incidents" onclick="showPage('incidents')">
+                    <span class="nav-icon">🚨</span>
+                    <span>Incidents</span>
+                </div>
+                <div class="nav-item" data-page="passwords" onclick="showPage('passwords')">
+                    <span class="nav-icon">🔑</span>
+                    <span>Passwords</span>
+                </div>
+                <div class="nav-item" data-page="documents" onclick="showPage('documents')">
+                    <span class="nav-icon">📄</span>
+                    <span>Documents</span>
+                </div>
+                <div class="nav-item admin-only visible" data-page="analytics" onclick="showPage('analytics')">
+                    <span class="nav-icon">📈</span>
+                    <span>Analytics</span>
+                </div>
+                <div class="nav-item admin-only visible" data-page="users" onclick="showPage('users')">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </div>
+                <div class="nav-item admin-only visible" data-page="settings" onclick="showPage('settings')">
+                    <span class="nav-icon"><img src="https://umskenya.com/wp-content/uploads/2024/07/umslogo-e1722428157937-120x64.png" style="width:22px;height:auto;border-radius:3px;vertical-align:middle"></span>
+                    <span>Settings</span>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                <!-- HEADER -->
+                <div class="header">
+                    <div class="header-left">
+                        <div class="header-logo">
+                            <div class="app-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0b5ea8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <polyline points="9 3 9 21"></polyline>
+                                    <polyline points="15 3 15 21"></polyline>
+                                    <polyline points="3 9 21 9"></polyline>
+                                    <polyline points="3 15 21 15"></polyline>
+                                </svg>
+                            </div>
+                            <img src="https://umskenya.com/wp-content/uploads/2024/07/umslogo-e1722428157937-120x64.png" alt="UMS Logo" style="width:40px; height:auto;">
+                        </div>
+                        <div class="header-title">
+                            UMS
+                            <span class="header-title-sub">Vendor</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="notification-bell" onclick="toggleNotifications()">
+                            🔔
+                            <div class="notification-badge" id="notificationBadge" style="display: none;">0</div>
+                        </div>
+                        <button class="btn btn-primary" id="installBtn" title="Install app" onclick="promptInstall()" style="display:none; padding:8px 10px; font-size:14px; background:var(--primary-blue); color:var(--white);">Install</button>
+                        <button class="btn btn-secondary" id="darkModeHeaderBtn" title="Toggle dark mode" onclick="toggleDarkMode()" style="padding:8px 10px; font-size:14px;">🌙</button>
+                        <div class="user-profile">
+                            <div class="user-avatar" id="userAvatar">A</div>
+                            <div class="user-info">
+                                <div class="user-name" id="userName">Admin User</div>
+                                <div class="user-role" id="userRole">Administrator</div>
+                            </div>
+                        </div>
+                        <button class="btn-logout" onclick="handleLogout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- CONTENT AREA -->
+                <div class="content-area">
+                    <!-- DASHBOARD PAGE -->
+                    <div class="page-section active" id="dashboardPage">
+                        <div class="page-header">
+                            <h1 class="page-title">Dashboard</h1>
+                            <p class="page-subtitle">Real-time system monitoring and metrics</p>
+                        </div>
+
+                        <div class="stats-grid" id="statsGrid">
+                            <!-- Stats will be loaded here -->
+                        </div>
+
+                        <div class="charts-grid">
+                            <div class="chart-card">
+                                <h3 class="chart-title">Issue Status Distribution</h3>
+                                <div class="chart-container">
+                                    <canvas id="statusChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3 class="chart-title">Impact Level Analysis</h3>
+                                <div class="chart-container">
+                                    <canvas id="impactChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3 class="chart-title">Password Status</h3>
+                                <div class="chart-container">
+                                    <canvas id="passwordChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3 class="chart-title">Most Affected Systems</h3>
+                                <div class="chart-container">
+                                    <canvas id="systemChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ISSUES PAGE -->
+                    <div class="page-section" id="issuesPage">
+                        <div class="page-header">
+                            <h1 class="page-title">Vendor Issues</h1>
+                            <p class="page-subtitle">Track and manage vendor system issues</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">All Issues</h2>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary" onclick="openIssueModal()">+ Add Issue</button>
+                                    <button class="btn btn-secondary" onclick="exportIssuesExcel()">Export Excel</button>
+                                    <button class="btn btn-secondary" onclick="exportIssuesPDF()">Export PDF</button>
+                                </div>
+                            </div>
+                            <table class="data-table" id="issuesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Vendor</th>
+                                        <th>System</th>
+                                        <th>Cause</th>
+                                        <th>Impact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="issuesBody">
+                                    <!-- Issues will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- INCIDENTS PAGE -->
+                    <div class="page-section" id="incidentsPage">
+                        <div class="page-header">
+                            <h1 class="page-title">Incidents</h1>
+                            <p class="page-subtitle">Report and track incidents across the company</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">All Incidents</h2>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary" onclick="openIncidentModal()">+ Add Incident</button>
+                                    <button class="btn btn-secondary" onclick="openExportDateFilter('excel')">Export Excel</button>
+                                    <button class="btn btn-secondary" onclick="openExportDateFilter('pdf')">Export PDF</button>
+                                </div>
+                            </div>
+                            <table class="data-table" id="incidentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Identification</th>
+                                        <th>Urgency</th>
+                                        <th>Items Affected</th>
+                                        <th>Immediate Action</th>
+                                        <th>Resolution Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="incidentsBody">
+                                    <!-- Incidents will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- PASSWORDS PAGE -->
+                    <div class="page-section" id="passwordsPage">
+                        <div class="page-header">
+                            <h1 class="page-title">Password Management</h1>
+                            <p class="page-subtitle">Track password expiration dates</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Password Reminders</h2>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary" onclick="openPasswordModal()">+ Add Password</button>
+                                    <button class="btn btn-secondary" onclick="exportPasswordsExcel()">Export Excel</button>
+                                    <button class="btn btn-secondary" onclick="exportPasswordsPDF()">Export PDF</button>
+                                </div>
+                            </div>
+                            <table class="data-table" id="passwordsTable">
+                                <thead>
+                                    <tr>
+                                        <th>System</th>
+                                        <th>Username</th>
+                                        <th>Expires In</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="passwordsBody">
+                                    <!-- Passwords will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- DOCUMENTS PAGE -->
+                    <div class="page-section" id="documentsPage">
+                        <div class="page-header">
+                            <h1 class="page-title">Documents</h1>
+                            <p class="page-subtitle">Manage vendor meeting documents</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Upload Document</h2>
+                                <button class="btn btn-primary admin-only visible" onclick="openDocumentModal()">+ Upload</button>
+                            </div>
+                            <div id="documentsList">
+                                <!-- Documents will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ANALYTICS PAGE -->
+                    <div class="page-section" id="analyticsPage">
+                        <div class="page-header">
+                            <h1 class="page-title">Analytics</h1>
+                            <p class="page-subtitle">Detailed system analytics and reports</p>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Issues</div>
+                                <div class="stat-value" id="analyticsTotal">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Average Resolution Time</div>
+                                <div class="stat-value" id="analyticsAvgTime">0d</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">System Uptime</div>
+                                <div class="stat-value" id="analyticsUptime">99%</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Downtime</div>
+                                <div class="stat-value" id="analyticsDowntime">0h</div>
+                            </div>
+                        </div>
+
+                        <div class="charts-grid">
+                            <div class="chart-card">
+                                <h3 class="chart-title">Monthly Issues</h3>
+                                <div class="chart-container">
+                                    <canvas id="monthlyChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h3 class="chart-title">Vendor Performance</h3>
+                                <div class="chart-container">
+                                    <canvas id="vendorChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USERS PAGE -->
+                    <div class="page-section" id="usersPage">
+                        <div class="page-header">
+                            <h1 class="page-title">User Management</h1>
+                            <p class="page-subtitle">Manage system users and permissions</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">System Users</h2>
+                                <button class="btn btn-primary" onclick="openUserModal()">+ Add User</button>
+                            </div>
+                            <table class="data-table" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersBody">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SETTINGS PAGE -->
+                        <div class="page-section" id="settingsPage">
+                            <div class="page-header">
+                                <h1 class="page-title">Settings</h1>
+                                <p class="page-subtitle">Manage your account settings</p>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Profile Information</h2>
+                                </div>
+                                <form id="profileForm" onsubmit="saveProfile(event)" style="padding: 20px 0;">
+                                    <div class="form-row full">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-input" id="profileEmail" readonly>
+                                        <small style="color:var(--text-light); font-size:12px;">Email cannot be changed</small>
+                                    </div>
+                                    <div class="form-row">
+                                        <div>
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-input" id="profileFullName">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="text" class="form-input" id="profilePhone" placeholder="+254...">
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:12px; justify-content:flex-end; padding-top:8px;">
+                                        <button type="button" class="btn btn-secondary" onclick="loadProfile()">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="card" style="margin-top:16px;">
+                                <div class="card-header">
+                                    <h2 class="card-title">Change Password</h2>
+                                </div>
+                                <form id="changePasswordForm" onsubmit="changePassword(event)" style="padding:20px;">
+                                    <div class="form-row full">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-input" id="currentPassword" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <div>
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" class="form-input" id="newPassword" required>
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Confirm New</label>
+                                            <input type="password" class="form-input" id="confirmNewPassword" required>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:12px; justify-content:flex-end; padding-top:8px;">
+                                        <button type="submit" class="btn btn-primary">Update Password</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPORT DATE FILTER MODAL -->
+    <div class="modal" id="exportDateFilterModal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Select Date Range for Export</h2>
+                <button class="close-btn" onclick="closeModal('exportDateFilterModal')">×</button>
+            </div>
+            <div style="padding: 30px;">
+                <div style="background: #f0f4f8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                    <input type="text" id="dateRangeDisplay" readonly style="border: none; background: white; padding: 10px 15px; border-radius: 6px; font-weight: 600; color: #0b5ea8; text-align: center; width: 100%; box-sizing: border-box;">
+                </div>
+                <div id="datePickerCalendar" style="margin-bottom: 20px;"></div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" style="flex:1" onclick="closeModal('exportDateFilterModal')">Cancel</button>
+                    <button type="button" class="btn btn-primary" style="flex:1" onclick="confirmExportWithDates()">Export</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal" id="issueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add/Edit Issue</span>
+                <button class="modal-close" onclick="closeModal('issueModal')">&times;</button>
+            </div>
+            <form id="issueForm" onsubmit="saveIssue(event)">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Vendor Name</label>
+                            <input type="text" class="form-input" id="issueVendor" required>
+                        </div>
+                        <div>
+                            <label class="form-label">System Name</label>
+                            <input type="text" class="form-input" id="issueSystem" required>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="issueDescription" required></textarea>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Cause</label>
+                        <textarea class="form-textarea" id="issueCause" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Impact Level</label>
+                            <select class="form-select" id="issueImpact" required>
+                                <option value="">Select Impact</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Downtime (hours)</label>
+                            <input type="number" class="form-input" id="issueDowntime" value="0" min="0">
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Root Cause Analysis</label>
+                        <textarea class="form-textarea" id="issueRCA" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="issueStatus" required>
+                                <option value="Open">Open</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Resolved">Resolved</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Resolution Notes</label>
+                        <textarea class="form-textarea" id="issueResolution"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('issueModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Issue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add/Edit Password</span>
+                <button class="modal-close" onclick="closeModal('passwordModal')">&times;</button>
+            </div>
+            <form id="passwordForm" onsubmit="savePassword(event)">
+                <div class="modal-body">
+                    <div class="form-row full">
+                        <label class="form-label">System/Service Name</label>
+                        <input type="text" class="form-input" id="passwordSystem" required>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" id="passwordUsername" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Employee</label>
+                            <input type="text" class="form-input" id="passwordEmployee">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Expiration Date</label>
+                            <input type="date" class="form-input" id="passwordDate" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Time</label>
+                            <input type="time" class="form-input" id="passwordTime" required>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" id="passwordNotes" style="min-height: 80px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('passwordModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="documentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Upload Document</span>
+                <button class="modal-close" onclick="closeModal('documentModal')">&times;</button>
+            </div>
+            <form id="documentForm" onsubmit="saveDocument(event)">
+                <div class="modal-body">
+                    <div class="form-row full">
+                        <label class="form-label">Meeting Title</label>
+                        <input type="text" class="form-input" id="docTitle" required>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="docDate" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Vendor</label>
+                            <input type="text" class="form-input" id="docVendor" required>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">File</label>
+                        <input type="file" class="form-input" id="docFile" required>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" id="docNotes" style="min-height: 80px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('documentModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add/Edit User</span>
+                <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="modal-body">
+                    <div class="form-row full">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="userName" required>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" id="userUsername" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="userPassword" required>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" id="userRole" required>
+                            <option value="User">User (View Only)</option>
+                            <option value="Admin">Admin (Full Access)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('userModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="viewIssueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>View Issue</span>
+                <button class="modal-close" onclick="closeModal('viewIssueModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="viewIssueBody" style="font-size:14px;">
+                <!-- Issue details injected here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewIssueModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="viewDocumentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>View Document</span>
+                <button class="modal-close" onclick="closeModal('viewDocumentModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="viewDocumentBody">
+                <!-- Document preview -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewDocumentModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="incidentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add/Edit Incident</span>
+                <button class="modal-close" onclick="closeModal('incidentModal')">&times;</button>
+            </div>
+            <form id="incidentForm" onsubmit="saveIncident(event)">
+                <div class="modal-body">
+                    <div class="form-row full">
+                        <label class="form-label">Incident Identification</label>
+                        <input type="text" class="form-input" id="incidentIdentification" required>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Incident Description (What happened?)</label>
+                        <textarea class="form-textarea" id="incidentDescription" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Items / Assets / Goods Affected</label>
+                            <input type="text" class="form-input" id="incidentItems">
+                        </div>
+                        <div>
+                            <label class="form-label">Immediate Action Taken</label>
+                            <input type="text" class="form-input" id="incidentImmediate">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Urgency</label>
+                            <select class="form-select" id="incidentUrgency" required>
+                                <option value="">Select Urgency</option>
+                                <option>Critical</option>
+                                <option>High</option>
+                                <option>Major</option>
+                                <option>Moderate</option>
+                                <option>Minor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Escalation</label>
+                            <input type="text" class="form-input" id="incidentEscalation">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Incident Date (Allow Backdating)</label>
+                            <input type="date" class="form-input" id="incidentDate" required>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Root Cause</label>
+                        <textarea class="form-textarea" id="incidentRootCause"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Resolution Status</label>
+                            <select class="form-select" id="incidentResolutionStatus" required>
+                                <option>Pending</option>
+                                <option>Closed</option>
+                                <option>Resolved</option>
+                                <option>Escalated</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('incidentModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Incident</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="viewIncidentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>UMS KENYA – INCIDENT Report</span>
+                <button class="modal-close" onclick="closeModal('viewIncidentModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="viewIncidentBody">
+                <!-- Incident details -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewIncidentModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION PANEL -->
+    <div class="card" id="notificationPanel" style="position: fixed; right: 30px; top: 90px; width: 350px; max-height: 400px; overflow-y: auto; display: none; z-index: 999;">
+        <div class="card-header">
+            <h3 class="card-title">Notifications</h3>
+            <button class="btn btn-secondary" onclick="clearNotifications()" style="font-size: 11px;">Clear</button>
+        </div>
+        <div id="notificationList" style="padding: 0;">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA MANAGEMENT ====================
+        const DataManager = {
+            initializeStorage() {
+                if (!localStorage.getItem('issues')) {
+                    localStorage.setItem('issues', JSON.stringify(this.getSampleIssues()));
+                }
+                if (!localStorage.getItem('passwords')) {
+                    localStorage.setItem('passwords', JSON.stringify(this.getSamplePasswords()));
+                }
+                if (!localStorage.getItem('documents')) {
+                    localStorage.setItem('documents', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('incidents')) {
+                    localStorage.setItem('incidents', JSON.stringify(this.getSampleIncidents()));
+                }
+                if (!localStorage.getItem('users')) {
+                    localStorage.setItem('users', JSON.stringify([
+                        { id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'Admin' },
+                        { id: 2, name: 'Regular User', username: 'user', password: 'user123', role: 'User' }
+                    ]));
+                }
+                if (!localStorage.getItem('notifications')) {
+                    localStorage.setItem('notifications', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('currentUser')) {
+                    localStorage.setItem('currentUser', JSON.stringify(null));
+                }
+            },
+
+            getSampleIssues() {
+                return [
+                    {
+                        id: 1,
+                        vendor: 'TechSoft Solutions',
+                        system: 'HR Management System',
+                        description: 'Database connection timeout',
+                        cause: 'High traffic during peak hours',
+                        impact: 'High',
+                        downtime: 8,
+                        rca: 'Connection pool size was insufficient',
+                        status: 'Resolved',
+                        resolution: 'Increased connection pool size',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        vendor: 'CloudNet Services',
+                        system: 'File Storage',
+                        description: 'Slow upload speeds',
+                        cause: 'Bandwidth limitation',
+                        impact: 'Medium',
+                        downtime: 0,
+                        rca: 'ISP bandwidth configuration issue',
+                        status: 'In Progress',
+                        resolution: 'Rebalancing bandwidth',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+            },
+
+            getSamplePasswords() {
+                const today = new Date();
+                return [
+                    {
+                        id: 1,
+                        system: 'Email System',
+                        username: 'admin@company.com',
+                        employee: 'John Doe',
+                        expiryDate: new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                        expiryTime: '09:00',
+                        notes: 'Critical system',
+                        notified: false
+                    }
+                ];
+            },
+
+            getIssues() {
+                return JSON.parse(localStorage.getItem('issues') || '[]');
+            },
+
+            saveIssue(issue) {
+                const issues = this.getIssues();
+                if (issue.id) {
+                    const index = issues.findIndex(i => i.id === issue.id);
+                    if (index !== -1) issues[index] = issue;
+                } else {
+                    issue.id = Date.now();
+                    issues.push(issue);
+                }
+                localStorage.setItem('issues', JSON.stringify(issues));
+            },
+
+            deleteIssue(id) {
+                let issues = this.getIssues();
+                issues = issues.filter(i => i.id !== id);
+                localStorage.setItem('issues', JSON.stringify(issues));
+            },
+
+            getPasswords() {
+                return JSON.parse(localStorage.getItem('passwords') || '[]');
+            },
+
+            savePassword(password) {
+                const passwords = this.getPasswords();
+                if (password.id) {
+                    const index = passwords.findIndex(p => p.id === password.id);
+                    if (index !== -1) passwords[index] = password;
+                } else {
+                    password.id = Date.now();
+                    passwords.push(password);
+                }
+                localStorage.setItem('passwords', JSON.stringify(passwords));
+            },
+
+            deletePassword(id) {
+                let passwords = this.getPasswords();
+                passwords = passwords.filter(p => p.id !== id);
+                localStorage.setItem('passwords', JSON.stringify(passwords));
+            },
+
+            getDocuments() {
+                return JSON.parse(localStorage.getItem('documents') || '[]');
+            },
+
+            saveDocument(doc) {
+                const documents = this.getDocuments();
+                doc.id = Date.now();
+                documents.push(doc);
+                localStorage.setItem('documents', JSON.stringify(documents));
+            },
+
+            deleteDocument(id) {
+                let documents = this.getDocuments();
+                documents = documents.filter(d => d.id !== id);
+                localStorage.setItem('documents', JSON.stringify(documents));
+            },
+
+            getUsers() {
+                return JSON.parse(localStorage.getItem('users') || '[]');
+            },
+
+            getSampleIncidents() {
+                return [
+                    {
+                        id: 1,
+                        identification: 'INC-2026-0001',
+                        description: 'Minor spill in server room causing brief access delays',
+                        itemsAffected: 'Server Rack 3',
+                        immediateAction: 'Evacuated area and cleaned spill',
+                        urgency: 'Minor',
+                        escalation: 'No',
+                        rootCause: 'Condensation from AC unit',
+                        resolutionStatus: 'Resolved',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+            },
+
+            getIncidents() {
+                return JSON.parse(localStorage.getItem('incidents') || '[]');
+            },
+
+            saveIncident(incident) {
+                const incidents = this.getIncidents();
+                if (incident.id) {
+                    const index = incidents.findIndex(i => i.id === incident.id);
+                    if (index !== -1) incidents[index] = incident;
+                } else {
+                    incident.id = Date.now();
+                    incident.createdAt = new Date().toISOString();
+                    incidents.push(incident);
+                }
+                localStorage.setItem('incidents', JSON.stringify(incidents));
+            },
+
+            deleteIncident(id) {
+                let incidents = this.getIncidents();
+                incidents = incidents.filter(i => i.id !== id);
+                localStorage.setItem('incidents', JSON.stringify(incidents));
+            },
+
+            saveUser(user) {
+                const users = this.getUsers();
+                if (user.id) {
+                    const index = users.findIndex(u => u.id === user.id);
+                    if (index !== -1) users[index] = user;
+                } else {
+                    user.id = Date.now();
+                    users.push(user);
+                }
+                localStorage.setItem('users', JSON.stringify(users));
+            },
+
+            deleteUser(id) {
+                let users = this.getUsers();
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('users', JSON.stringify(users));
+            },
+
+            getCurrentUser() {
+                return JSON.parse(localStorage.getItem('currentUser') || 'null');
+            },
+
+            setCurrentUser(user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+            },
+
+            addNotification(notification) {
+                const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                notification.id = Date.now();
+                notification.timestamp = new Date().toISOString();
+                notifications.unshift(notification);
+                if (notifications.length > 50) notifications.pop();
+                localStorage.setItem('notifications', JSON.stringify(notifications));
+                updateNotificationBadge();
+                // Send desktop notification when available
+                try {
+                    sendDesktopNotification(notification.message || 'Notification', notification.priority || 'normal');
+                } catch (e) {
+                    // ignore
+                }
+            },
+
+            getNotifications() {
+                return JSON.parse(localStorage.getItem('notifications') || '[]');
+            },
+
+            clearNotifications() {
+                localStorage.setItem('notifications', JSON.stringify([]));
+                updateNotificationBadge();
+            }
+        };
+
+        // ==================== INITIALIZATION ====================
+        window.addEventListener('load', () => {
+            DataManager.initializeStorage();
+            checkAuthentication();
+            checkPasswordExpiry();
+            // Request notification permission for desktop alerts
+            requestNotificationPermission();
+        });
+
+        // ==================== AUTHENTICATION ====================
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const users = DataManager.getUsers();
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                DataManager.setCurrentUser(user);
+                document.getElementById('loginError').style.display = 'none';
+                setTimeout(() => {
+                    showMainApp();
+                }, 100);
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        function toggleLoginPassword() {
+            const el = document.getElementById('loginPassword');
+            if (!el) return;
+            el.type = el.type === 'password' ? 'text' : 'password';
+        }
+
+        function checkAuthentication() {
+            const user = DataManager.getCurrentUser();
+            if (user) {
+                showMainApp();
+            } else {
+                showLoginPage();
+            }
+        }
+
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function showMainApp() {
+            const user = DataManager.getCurrentUser();
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userRole').textContent = user.role;
+            document.getElementById('userAvatar').textContent = user.name[0].toUpperCase();
+
+            if (user.role === 'Admin') {
+                document.querySelectorAll('.admin-only').forEach(el => {
+                    el.classList.add('visible');
+                    if (el.classList.contains('flex')) {
+                        el.style.display = 'flex';
+                    } else {
+                        el.style.display = 'block';
+                    }
+                });
+            }
+
+            // sync UI state
+            updateNotificationBadge();
+            const btn = document.getElementById('darkModeHeaderBtn');
+            if (btn) btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            loadDashboard();
+        }
+
+        function handleLogout() {
+            DataManager.setCurrentUser(null);
+            showLoginPage();
+            document.getElementById('loginForm').reset();
+        }
+
+        // ==================== PAGE NAVIGATION ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(pageId + 'Page').classList.add('active');
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+
+            if (pageId === 'dashboard') loadDashboard();
+            if (pageId === 'issues') loadIssues();
+            if (pageId === 'passwords') loadPasswords();
+            if (pageId === 'documents') loadDocuments();
+            if (pageId === 'incidents') loadIncidents();
+            if (pageId === 'analytics') loadAnalytics();
+            if (pageId === 'users') loadUsers();
+            if (pageId === 'settings') loadProfile();
+        }
+
+        // ==================== DASHBOARD ====================
+        function loadDashboard() {
+            const issues = DataManager.getIssues();
+            const passwords = DataManager.getPasswords();
+
+            const stats = [
+                { label: 'Total Issues', value: issues.length, icon: '📊' },
+                { label: 'Open Issues', value: issues.filter(i => i.status === 'Open').length, icon: '🔴' },
+                { label: 'In Progress', value: issues.filter(i => i.status === 'In Progress').length, icon: '⏳' },
+                { label: 'Resolved', value: issues.filter(i => i.status === 'Resolved').length, icon: '✅' },
+                { label: 'Passwords', value: passwords.length, icon: '🔑' },
+                { label: 'Expiring Soon', value: passwords.filter(p => getDaysUntilExpiry(p.expiryDate) <= 2).length, icon: '⚠️' }
+            ];
+
+            const html = stats.map(s => `
+                <div class="stat-card">
+                    <div class="stat-label">${s.label}</div>
+                    <div class="stat-value">${s.value}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('statsGrid').innerHTML = html;
+
+            // Load charts
+            setTimeout(() => {
+                loadCharts();
+            }, 100);
+        }
+
+        function loadCharts() {
+            const issues = DataManager.getIssues();
+            const passwords = DataManager.getPasswords();
+
+            // Status Chart
+            const ctx1 = document.getElementById('statusChart');
+            if (ctx1 && ctx1.chart) ctx1.chart.destroy();
+            if (ctx1) {
+                ctx1.chart = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Open', 'In Progress', 'Resolved'],
+                        datasets: [{
+                            data: [
+                                issues.filter(i => i.status === 'Open').length,
+                                issues.filter(i => i.status === 'In Progress').length,
+                                issues.filter(i => i.status === 'Resolved').length
+                            ],
+                            backgroundColor: ['#e94560', '#f77f00', '#06d6a0']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            // Impact Chart
+            const ctx2 = document.getElementById('impactChart');
+            if (ctx2 && ctx2.chart) ctx2.chart.destroy();
+            if (ctx2) {
+                ctx2.chart = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['High', 'Medium', 'Low'],
+                        datasets: [{
+                            label: 'Issues by Impact',
+                            data: [
+                                issues.filter(i => i.impact === 'High').length,
+                                issues.filter(i => i.impact === 'Medium').length,
+                                issues.filter(i => i.impact === 'Low').length
+                            ],
+                            backgroundColor: ['#e94560', '#f77f00', '#06d6a0']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+                });
+            }
+
+            // Password Status Chart
+            const ctx3 = document.getElementById('passwordChart');
+            if (ctx3 && ctx3.chart) ctx3.chart.destroy();
+            if (ctx3) {
+                const expiring = passwords.filter(p => getDaysUntilExpiry(p.expiryDate) <= 2).length;
+                const soon = passwords.filter(p => getDaysUntilExpiry(p.expiryDate) > 2 && getDaysUntilExpiry(p.expiryDate) <= 7).length;
+                const safe = passwords.filter(p => getDaysUntilExpiry(p.expiryDate) > 7).length;
+
+                ctx3.chart = new Chart(ctx3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Expiring Soon', 'Warning', 'Safe'],
+                        datasets: [{
+                            data: [expiring, soon, safe],
+                            backgroundColor: ['#e94560', '#f77f00', '#06d6a0']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            // System Chart
+            const ctx4 = document.getElementById('systemChart');
+            if (ctx4 && ctx4.chart) ctx4.chart.destroy();
+            if (ctx4) {
+                const systems = {};
+                issues.forEach(i => {
+                    systems[i.system] = (systems[i.system] || 0) + 1;
+                });
+
+                ctx4.chart = new Chart(ctx4, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(systems),
+                        datasets: [{
+                            label: 'Issues per System',
+                            data: Object.values(systems),
+                            backgroundColor: '#e94560'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+                });
+            }
+        }
+
+        function getDaysUntilExpiry(dateStr) {
+            const today = new Date();
+            const expiry = new Date(dateStr);
+            const diff = expiry - today;
+            return Math.ceil(diff / (1000 * 60 * 60 * 24));
+        }
+
+        // ==================== ISSUES ====================
+        function loadIssues() {
+            const issues = DataManager.getIssues();
+            const html = issues.map(issue => `
+                <tr>
+                    <td><strong>${issue.vendor}</strong></td>
+                    <td>${issue.system}</td>
+                    <td>${issue.cause.substring(0, 30)}...</td>
+                    <td><span class="badge badge-${issue.impact === 'High' ? 'danger' : issue.impact === 'Medium' ? 'warning' : 'success'}">${issue.impact}</span></td>
+                    <td><span class="badge badge-${issue.status === 'Resolved' ? 'success' : issue.status === 'In Progress' ? 'warning' : 'danger'}">${issue.status}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="viewIssue(${issue.id})" style="font-size: 11px;">View</button>
+                        <button class="btn btn-secondary" onclick="editIssue(${issue.id})" style="font-size: 11px;">Edit</button>
+                        <button class="btn btn-secondary" onclick="deleteIssueItem(${issue.id})" style="font-size: 11px; background: #ffcccc;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('issuesBody').innerHTML = html || '<tr><td colspan="6" style="text-align: center; padding: 40px;">No issues yet. Create one to get started!</td></tr>';
+        }
+
+        function openIssueModal() {
+            document.getElementById('issueForm').reset();
+            document.querySelector('#issueModal .modal-header span').textContent = 'Add Issue';
+            document.getElementById('issueModal').classList.add('active');
+        }
+
+        function editIssue(id) {
+            const issues = DataManager.getIssues();
+            const issue = issues.find(i => i.id === id);
+            if (issue) {
+                document.getElementById('issueVendor').value = issue.vendor;
+                document.getElementById('issueSystem').value = issue.system;
+                document.getElementById('issueDescription').value = issue.description;
+                document.getElementById('issueCause').value = issue.cause;
+                document.getElementById('issueImpact').value = issue.impact;
+                document.getElementById('issueDowntime').value = issue.downtime;
+                document.getElementById('issueRCA').value = issue.rca;
+                document.getElementById('issueStatus').value = issue.status;
+                document.getElementById('issueResolution').value = issue.resolution;
+                document.getElementById('issueForm').dataset.id = id;
+                document.querySelector('#issueModal .modal-header span').textContent = 'Edit Issue';
+                document.getElementById('issueModal').classList.add('active');
+            }
+        }
+
+        function saveIssue(e) {
+            e.preventDefault();
+            const issue = {
+                id: parseInt(document.getElementById('issueForm').dataset.id) || null,
+                vendor: document.getElementById('issueVendor').value,
+                system: document.getElementById('issueSystem').value,
+                description: document.getElementById('issueDescription').value,
+                cause: document.getElementById('issueCause').value,
+                impact: document.getElementById('issueImpact').value,
+                downtime: parseInt(document.getElementById('issueDowntime').value) || 0,
+                rca: document.getElementById('issueRCA').value,
+                status: document.getElementById('issueStatus').value,
+                resolution: document.getElementById('issueResolution').value
+            };
+
+            DataManager.saveIssue(issue);
+            closeModal('issueModal');
+            loadIssues();
+            showToast('Issue saved successfully!');
+        }
+
+        function deleteIssueItem(id) {
+            if (confirm('Are you sure you want to delete this issue?')) {
+                DataManager.deleteIssue(id);
+                loadIssues();
+                showToast('Issue deleted!');
+            }
+        }
+
+        function viewIssue(id) {
+            const issues = DataManager.getIssues();
+            const issue = issues.find(i => i.id === id);
+            if (!issue) return;
+            const body = document.getElementById('viewIssueBody');
+            body.innerHTML = `
+                <h3 style="margin-bottom:8px;">${issue.vendor} — ${issue.system}</h3>
+                <p style="color:var(--text-light); margin-bottom:8px;">Status: <strong>${issue.status}</strong> • Impact: <strong>${issue.impact}</strong></p>
+                <p><strong>Description</strong><br/>${issue.description}</p>
+                <p><strong>Cause</strong><br/>${issue.cause}</p>
+                <p><strong>RCA</strong><br/>${issue.rca}</p>
+                <p><strong>Downtime</strong> ${issue.downtime} hours</p>
+                <p><strong>Resolution</strong><br/>${issue.resolution || '—'}</p>
+            `;
+            document.getElementById('viewIssueModal').classList.add('active');
+        }
+
+        function exportIssuesExcel() {
+            const issues = DataManager.getIssues();
+            if (!issues || issues.length === 0) return showToast('No issues to export');
+            const data = issues.map(i => ({
+                Vendor: i.vendor,
+                System: i.system,
+                Cause: i.cause,
+                Impact: i.impact,
+                'Downtime (hrs)': i.downtime,
+                RCA: i.rca,
+                Status: i.status,
+                Resolution: i.resolution
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Issues');
+            XLSX.writeFile(wb, 'ums-issues.xlsx');
+            showToast('Issues exported (Excel)');
+        }
+
+        async function exportIssuesPDF() {
+            const issues = DataManager.getIssues();
+            if (!issues || issues.length === 0) return showToast('No issues to export');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'landscape' });
+                const now = new Date().toLocaleString();
+                
+                // Add logo - use generated logo directly
+                const logoData = createUMSLogo();
+                if (logoData) {
+                    doc.addImage(logoData, 'PNG', 14, 10, 30, 16);
+                }
+                
+                // Add date on right
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(now, 260, 20, { align: 'right' });
+                
+                // Add horizontal line
+                doc.setDrawColor(200, 200, 200);
+                doc.line(14, 32, 260, 32);
+                
+                // Title
+                doc.setFontSize(14);
+                doc.setTextColor(8, 61, 119);
+                doc.text('UMS KENYA - VENDOR ISSUES Report', 14, 45);
+                
+                // Table
+                const columns = ['Vendor', 'System', 'Cause', 'Impact', 'Downtime', 'RCA', 'Status', 'Resolution'];
+                const rows = issues.map(i => [
+                    i.vendor,
+                    i.system,
+                    (i.cause || '').substring(0, 15),
+                    (i.impact || '').substring(0, 15),
+                    i.downtime || '-',
+                    (i.rca || '').substring(0, 15),
+                    i.status,
+                    (i.resolution || '').substring(0, 15)
+                ]);
+                doc.autoTable({ head: [columns], body: rows, startY: 52, styles: { fontSize: 8, cellPadding: 2 } });
+                doc.save('ums-issues.pdf');
+                showToast('Issues exported (PDF)');
+            } catch(error) {
+                console.error('PDF export error:', error);
+                showToast('Error exporting PDF: ' + error.message);
+            }
+        }
+
+        function exportIssues() {
+            const issues = DataManager.getIssues();
+            const csv = [['Vendor', 'System', 'Cause', 'Impact', 'Downtime (hrs)', 'RCA', 'Status', 'Resolution']];
+            issues.forEach(i => {
+                csv.push([i.vendor, i.system, i.cause, i.impact, i.downtime, i.rca, i.status, i.resolution]);
+            });
+
+            const csvContent = csv.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'issues.csv';
+            a.click();
+            showToast('Issues exported!');
+        }
+
+        function exportPasswordsExcel() {
+            const passwords = DataManager.getPasswords();
+            if (!passwords || passwords.length === 0) return showToast('No passwords to export');
+            const data = passwords.map(p => ({
+                System: p.system,
+                Username: p.username,
+                'Expiry Date': p.expiryDate,
+                Status: getDaysUntilExpiry(p.expiryDate) <= 2 ? 'Expiring' : 'Active'
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Passwords');
+            XLSX.writeFile(wb, 'ums-passwords.xlsx');
+            showToast('Passwords exported (Excel)');
+        }
+
+        async function exportPasswordsPDF() {
+            const passwords = DataManager.getPasswords();
+            if (!passwords || passwords.length === 0) return showToast('No passwords to export');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait' });
+                const now = new Date().toLocaleString();
+                
+                const logoData = createUMSLogo();
+                if (logoData) {
+                    doc.addImage(logoData, 'PNG', 14, 10, 30, 16);
+                }
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(now, 195, 20, { align: 'right' });
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(14, 32, 200, 32);
+                
+                doc.setFontSize(14);
+                doc.setTextColor(8, 61, 119);
+                doc.text('UMS KENYA - PASSWORD Management Report', 14, 45);
+                
+                const columns = ['System', 'Username', 'Expiry Date', 'Status'];
+                const rows = passwords.map(p => [
+                    p.system,
+                    p.username,
+                    p.expiryDate,
+                    getDaysUntilExpiry(p.expiryDate) <= 2 ? 'Expiring' : 'Active'
+                ]);
+                doc.autoTable({ head: [columns], body: rows, startY: 52, styles: { fontSize: 9, cellPadding: 2 } });
+                doc.save('ums-passwords.pdf');
+                showToast('Passwords exported (PDF)');
+            } catch(error) {
+                console.error('PDF export error:', error);
+                showToast('Error exporting PDF');
+            }
+        }
+
+        function exportDocumentsExcel() {
+            const documents = DataManager.getDocuments();
+            if (!documents || documents.length === 0) return showToast('No documents to export');
+            const data = documents.map(d => ({
+                Title: d.title,
+                Date: d.date,
+                Vendor: d.vendor,
+                Notes: (d.notes || '').substring(0, 50),
+                Filename: d.filename
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Documents');
+            XLSX.writeFile(wb, 'ums-documents.xlsx');
+            showToast('Documents exported (Excel)');
+        }
+
+        async function exportDocumentsPDF() {
+            const documents = DataManager.getDocuments();
+            if (!documents || documents.length === 0) return showToast('No documents to export');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait' });
+                const now = new Date().toLocaleString();
+                
+                const logoData = createUMSLogo();
+                if (logoData) {
+                    doc.addImage(logoData, 'PNG', 14, 10, 30, 16);
+                }
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(now, 195, 20, { align: 'right' });
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(14, 32, 200, 32);
+                
+                doc.setFontSize(14);
+                doc.setTextColor(8, 61, 119);
+                doc.text('UMS KENYA - DOCUMENTS Report', 14, 45);
+                
+                const columns = ['Title', 'Date', 'Vendor', 'Notes', 'Filename'];
+                const rows = documents.map(d => [
+                    d.title,
+                    d.date,
+                    d.vendor,
+                    (d.notes || '').substring(0, 20),
+                    d.filename
+                ]);
+                doc.autoTable({ head: [columns], body: rows, startY: 52, styles: { fontSize: 8, cellPadding: 2 } });
+                doc.save('ums-documents.pdf');
+                showToast('Documents exported (PDF)');
+            } catch(error) {
+                console.error('PDF export error:', error);
+                showToast('Error exporting PDF');
+            }
+        }
+
+        // ==================== PASSWORDS ====================
+        function loadPasswords() {
+            const passwords = DataManager.getPasswords();
+            const html = passwords.map(pwd => {
+                const daysLeft = getDaysUntilExpiry(pwd.expiryDate);
+                let status = 'Safe';
+                let statusClass = 'success';
+                if (daysLeft <= 0) {
+                    status = 'Expired';
+                    statusClass = 'danger';
+                } else if (daysLeft <= 2) {
+                    status = 'Expiring Now';
+                    statusClass = 'danger';
+                } else if (daysLeft <= 7) {
+                    status = 'Expiring Soon';
+                    statusClass = 'warning';
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${pwd.system}</strong></td>
+                        <td>${pwd.username}</td>
+                        <td>${daysLeft > 0 ? daysLeft + ' days' : 'Expired'}</td>
+                        <td><span class="badge badge-${statusClass}">${status}</span></td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="editPassword(${pwd.id})" style="font-size: 11px;">Edit</button>
+                            <button class="btn btn-secondary" onclick="deletePasswordItem(${pwd.id})" style="font-size: 11px; background: #ffcccc;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('passwordsBody').innerHTML = html || '<tr><td colspan="5" style="text-align: center; padding: 40px;">No passwords yet. Add one to track expiration!</td></tr>';
+
+            // Check for expiring passwords
+            const expiringPasswords = passwords.filter(p => {
+                const days = getDaysUntilExpiry(p.expiryDate);
+                return days <= 2 && days >= 0;
+            });
+
+            expiringPasswords.forEach(pwd => {
+                if (!pwd.notified) {
+                    DataManager.addNotification({
+                        type: 'password',
+                        message: `Password for ${pwd.system} expires in ${getDaysUntilExpiry(pwd.expiryDate)} day(s)!`,
+                        priority: 'high'
+                    });
+                    pwd.notified = true;
+                    DataManager.savePassword(pwd);
+                }
+            });
+        }
+
+        function openPasswordModal() {
+            document.getElementById('passwordForm').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('passwordDate').value = today;
+            document.querySelector('#passwordModal .modal-header span').textContent = 'Add Password';
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function editPassword(id) {
+            const passwords = DataManager.getPasswords();
+            const pwd = passwords.find(p => p.id === id);
+            if (pwd) {
+                document.getElementById('passwordSystem').value = pwd.system;
+                document.getElementById('passwordUsername').value = pwd.username;
+                document.getElementById('passwordEmployee').value = pwd.employee;
+                document.getElementById('passwordDate').value = pwd.expiryDate;
+                document.getElementById('passwordTime').value = pwd.expiryTime;
+                document.getElementById('passwordNotes').value = pwd.notes;
+                document.getElementById('passwordForm').dataset.id = id;
+                document.querySelector('#passwordModal .modal-header span').textContent = 'Edit Password';
+                document.getElementById('passwordModal').classList.add('active');
+            }
+        }
+
+        function savePassword(e) {
+            e.preventDefault();
+            const password = {
+                id: parseInt(document.getElementById('passwordForm').dataset.id) || null,
+                system: document.getElementById('passwordSystem').value,
+                username: document.getElementById('passwordUsername').value,
+                employee: document.getElementById('passwordEmployee').value,
+                expiryDate: document.getElementById('passwordDate').value,
+                expiryTime: document.getElementById('passwordTime').value,
+                notes: document.getElementById('passwordNotes').value,
+                notified: false
+            };
+
+            DataManager.savePassword(password);
+            closeModal('passwordModal');
+            loadPasswords();
+            showToast('Password reminder saved!');
+        }
+
+        function deletePasswordItem(id) {
+            if (confirm('Are you sure you want to delete this password?')) {
+                DataManager.deletePassword(id);
+                loadPasswords();
+                showToast('Password deleted!');
+            }
+        }
+
+        function checkPasswordExpiry() {
+            const passwords = DataManager.getPasswords();
+            passwords.forEach(pwd => {
+                const days = getDaysUntilExpiry(pwd.expiryDate);
+                if (days === 2 && !pwd.notified2day) {
+                    DataManager.addNotification({
+                        type: 'password',
+                        message: `📢 ${pwd.system} password expires in 2 DAYS!`,
+                        priority: 'high'
+                    });
+                    pwd.notified2day = true;
+                    DataManager.savePassword(pwd);
+                }
+            });
+
+            setTimeout(() => checkPasswordExpiry(), 60000);
+        }
+
+        // ==================== DOCUMENTS ====================
+        function loadDocuments() {
+            const documents = DataManager.getDocuments();
+            const html = documents.map(doc => `
+                <div style="padding: 16px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h4 style="margin-bottom: 4px;">${doc.title}</h4>
+                            <p style="font-size: 12px; color: var(--text-light);">
+                                <strong>${doc.vendor}</strong> • ${new Date(doc.date).toLocaleDateString()}
+                            </p>
+                            <p style="font-size: 12px; margin-top: 8px;">${doc.notes}</p>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-secondary" onclick="viewDocument(${doc.id})" style="font-size: 11px;">View</button>
+                            <button class="btn btn-secondary" onclick="downloadDocument(${doc.id})" style="font-size: 11px;">Download</button>
+                            <button class="btn btn-secondary" onclick="deleteDocumentItem(${doc.id})" style="font-size: 11px; background: #ffcccc;">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('documentsList').innerHTML = html || '<div style="text-align: center; padding: 40px; color: var(--text-light);">No documents yet.</div>';
+        }
+
+        // ==================== INCIDENTS ====================
+        function loadIncidents() {
+            const incidents = DataManager.getIncidents();
+            const html = incidents.map(i => `
+                <tr>
+                    <td><strong>${i.identification}</strong></td>
+                    <td>${i.urgency}</td>
+                    <td>${i.itemsAffected || '-'}</td>
+                    <td>${(i.immediateAction || '-').substring(0,40)}...</td>
+                    <td><span class="badge badge-${i.resolutionStatus === 'Resolved' ? 'success' : i.resolutionStatus === 'Pending' ? 'warning' : 'danger'}">${i.resolutionStatus}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="viewIncident(${i.id})" style="font-size:11px;">View</button>
+                        <button class="btn btn-secondary" onclick="editIncident(${i.id})" style="font-size:11px;">Edit</button>
+                        <button class="btn" style="background:#ffcccc; font-size:11px;" onclick="deleteIncidentItem(${i.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('incidentsBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:40px;">No incidents recorded.</td></tr>';
+        }
+
+        function openIncidentModal() {
+            document.getElementById('incidentForm').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('incidentDate').value = today;
+            document.querySelector('#incidentModal .modal-header span').textContent = 'Add Incident';
+            document.getElementById('incidentModal').classList.add('active');
+        }
+
+        function editIncident(id) {
+            const incidents = DataManager.getIncidents();
+            const inc = incidents.find(x => x.id === id);
+            if (!inc) return;
+            document.getElementById('incidentIdentification').value = inc.identification;
+            document.getElementById('incidentDescription').value = inc.description;
+            document.getElementById('incidentItems').value = inc.itemsAffected || '';
+            document.getElementById('incidentImmediate').value = inc.immediateAction || '';
+            document.getElementById('incidentUrgency').value = inc.urgency || '';
+            document.getElementById('incidentEscalation').value = inc.escalation || '';
+            const incDate = new Date(inc.createdAt || new Date());
+            document.getElementById('incidentDate').value = incDate.toISOString().split('T')[0];
+            document.getElementById('incidentRootCause').value = inc.rootCause || '';
+            document.getElementById('incidentResolutionStatus').value = inc.resolutionStatus || 'Pending';
+            document.getElementById('incidentForm').dataset.id = id;
+            document.querySelector('#incidentModal .modal-header span').textContent = 'Edit Incident';
+            document.getElementById('incidentModal').classList.add('active');
+        }
+
+        function saveIncident(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('incidentForm').dataset.id) || null;
+            const incidentDate = document.getElementById('incidentDate').value;
+            const dateObj = new Date(incidentDate);
+            const incident = {
+                id: id,
+                identification: document.getElementById('incidentIdentification').value,
+                description: document.getElementById('incidentDescription').value,
+                itemsAffected: document.getElementById('incidentItems').value,
+                immediateAction: document.getElementById('incidentImmediate').value,
+                urgency: document.getElementById('incidentUrgency').value,
+                escalation: document.getElementById('incidentEscalation').value,
+                rootCause: document.getElementById('incidentRootCause').value,
+                resolutionStatus: document.getElementById('incidentResolutionStatus').value,
+                createdAt: dateObj.toISOString()
+            };
+
+            DataManager.saveIncident(incident);
+            closeModal('incidentModal');
+            loadIncidents();
+            showToast('Incident saved');
+        }
+
+        function deleteIncidentItem(id) {
+            if (confirm('Delete this incident?')) {
+                DataManager.deleteIncident(id);
+                loadIncidents();
+                showToast('Incident deleted');
+            }
+        }
+
+        function viewIncident(id) {
+            const incidents = DataManager.getIncidents();
+            const inc = incidents.find(x => x.id === id);
+            if (!inc) return;
+            const body = document.getElementById('viewIncidentBody');
+            body.innerHTML = `
+                <h3 style="margin-bottom:8px;">UMS KENYA \u2013 INCIDENT Report</h3>
+                <p><strong>Identification:</strong> ${inc.identification}</p>
+                <p><strong>Urgency:</strong> ${inc.urgency}</p>
+                <p><strong>Description:</strong><br/>${inc.description}</p>
+                <p><strong>Items / Assets Affected:</strong><br/>${inc.itemsAffected || '-'}</p>
+                <p><strong>Immediate Action Taken:</strong><br/>${inc.immediateAction || '-'}</p>
+                <p><strong>Escalation:</strong> ${inc.escalation || '-'}</p>
+                <p><strong>Root Cause:</strong><br/>${inc.rootCause || '-'}</p>
+                <p><strong>Resolution Status:</strong> ${inc.resolutionStatus}</p>
+            `;
+            document.getElementById('viewIncidentModal').classList.add('active');
+        }
+
+        function exportIncidentsExcel(fromDate, toDate) {
+            const allIncidents = DataManager.getIncidents() || [];
+            const incidents = (fromDate && toDate) ? filterByDateRange(allIncidents, fromDate, toDate) : allIncidents;
+            if (!incidents || incidents.length === 0) return showToast('No incidents to export');
+            const data = incidents.map(i => ({
+                Identification: i.identification,
+                Urgency: i.urgency,
+                Description: i.description,
+                ItemsAffected: i.itemsAffected || '-',
+                ImmediateAction: i.immediateAction || '-',
+                Escalation: i.escalation || '-',
+                RootCause: i.rootCause || '-',
+                ResolutionStatus: i.resolutionStatus,
+                CreatedAt: new Date(i.createdAt).toLocaleString()
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Incidents');
+            const fileName = (fromDate && toDate) ? `ums-incidents-${fromDate.toISOString().split('T')[0]}-to-${toDate.toISOString().split('T')[0]}.xlsx` : 'ums-incidents.xlsx';
+            XLSX.writeFile(wb, fileName);
+            showToast('Incidents exported (Excel)');
+        }
+
+        let exportPendingType = null;
+        let calendarStartDate = null;
+        let calendarEndDate = null;
+        let calendarSelectingStart = true;
+
+        function openExportDateFilter(type) {
+            exportPendingType = type;
+            calendarStartDate = null;
+            calendarEndDate = null;
+            calendarSelectingStart = true;
+            currentCalendarDate = new Date();
+            document.getElementById('dateRangeDisplay').value = 'No date range selected - All data will be exported';
+            renderCalendar(new Date());
+            document.getElementById('exportDateFilterModal').classList.add('active');
+        }
+
+        function renderCalendar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const monthName = new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long' });
+            
+            let html = `
+                <div class="calendar-header">
+                    <button onclick="prevMonth()">&lt;</button>
+                    <h3>${monthName} ${year}</h3>
+                    <button onclick="nextMonth()">&gt;</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-weekday">Su</div>
+                    <div class="calendar-weekday">Mo</div>
+                    <div class="calendar-weekday">Tu</div>
+                    <div class="calendar-weekday">We</div>
+                    <div class="calendar-weekday">Th</div>
+                    <div class="calendar-weekday">Fr</div>
+                    <div class="calendar-weekday">Sa</div>
+            `;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            for (let i = firstDay - 1; i >= 0; i--) {
+                html += `<div class="calendar-day other-month">${daysInPrevMonth - i}</div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentDate = new Date(year, month, day);
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let classes = 'calendar-day';
+                
+                if ((calendarStartDate && dateStr === getDateString(calendarStartDate)) ||
+                    (calendarEndDate && dateStr === getDateString(calendarEndDate))) {
+                    classes += ' selected';
+                } else if (calendarStartDate && calendarEndDate && currentDate > calendarStartDate && currentDate < calendarEndDate) {
+                    classes += ' in-range';
+                }
+                
+                html += `<div class="${classes}" onclick="selectDate('${dateStr}')">${day}</div>`;
+            }
+
+            const remainingDays = 42 - (firstDay + daysInMonth);
+            for (let i = 1; i <= remainingDays; i++) {
+                html += `<div class="calendar-day other-month">${i}</div>`;
+            }
+
+            html += '</div>';
+            document.getElementById('datePickerCalendar').innerHTML = html;
+        }
+
+        let currentCalendarDate = new Date();
+
+        function getDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function prevMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar(currentCalendarDate);
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar(currentCalendarDate);
+        }
+
+        function getDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function selectDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            if (calendarSelectingStart) {
+                calendarStartDate = date;
+                calendarSelectingStart = false;
+                updateDateRangeDisplay();
+            } else {
+                if (date < calendarStartDate) {
+                    calendarEndDate = calendarStartDate;
+                    calendarStartDate = date;
+                } else {
+                    calendarEndDate = date;
+                }
+                calendarSelectingStart = true;
+                updateDateRangeDisplay();
+            }
+            renderCalendar(currentCalendarDate);
+        }
+
+        function updateDateRangeDisplay() {
+            if (calendarStartDate) {
+                const start = calendarStartDate.toISOString().split('T')[0];
+                const end = calendarEndDate ? calendarEndDate.toISOString().split('T')[0] : start;
+                document.getElementById('dateRangeDisplay').value = `${start} - ${end}`;
+            }
+        }
+
+        function confirmExportWithDates() {
+            closeModal('exportDateFilterModal');
+            const fromDate = calendarStartDate || null;
+            const toDate = calendarEndDate || calendarStartDate || null;
+            if (exportPendingType === 'pdf') {
+                exportIncidentsPDF(fromDate, toDate);
+            } else if (exportPendingType === 'excel') {
+                exportIncidentsExcel(fromDate, toDate);
+            }
+            exportPendingType = null;
+            calendarStartDate = null;
+            calendarEndDate = null;
+        }        function filterByDateRange(items, fromDate, toDate) {
+            if (!fromDate || !toDate) return items;
+            return items.filter(item => {
+                const itemDate = new Date(item.createdAt || item.date || item.dateCreated);
+                itemDate.setHours(0, 0, 0, 0);
+                const from = new Date(fromDate);
+                from.setHours(0, 0, 0, 0);
+                const to = new Date(toDate);
+                to.setHours(23, 59, 59, 999);
+                return itemDate >= from && itemDate <= to;
+            });
+        }
+
+        // Logo URL constant
+        const UMS_LOGO_URL = 'https://umskenya.com/wp-content/uploads/2024/07/umslogo-e1722428157937-120x64.png';
+
+        // Create UMS logo as base64 (blue box with white text - matches brand design)
+        function createUMSLogo() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 230;
+            canvas.height = 120;
+            const ctx = canvas.getContext('2d');
+            
+            // Blue background rectangle
+            ctx.fillStyle = '#0b5ea8';
+            ctx.fillRect(0, 0, 230, 120);
+            
+            // White "UMS" text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 70px Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('UMS', 115, 60);
+            
+            return canvas.toDataURL('image/png');
+        }
+
+        async function loadImageAsBase64(url) {
+            try {
+                // First try to load from network with extended timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(url, { 
+                    headers: { 'Accept': 'image/*' },
+                    mode: 'cors',
+                    cache: 'force-cache',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const blob = await response.blob();
+                
+                // Check if it's actually an image
+                if (!blob.type.startsWith('image/')) {
+                    throw new Error('Not an image file');
+                }
+                
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            } catch (error) {
+                console.warn('Failed to load image from URL:', error, 'using generated logo');
+                // Always use generated logo for reliability
+                return createUMSLogo();
+            }
+        }
+
+        async function exportIncidentsPDF(fromDate, toDate) {
+            const allIncidents = DataManager.getIncidents() || [];
+            const incidents = (fromDate && toDate) ? filterByDateRange(allIncidents, fromDate, toDate) : allIncidents;
+            if (!incidents || incidents.length === 0) return showToast('No incidents to export');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait' });
+                const now = new Date().toLocaleString();
+                
+                // Add UMS logo - use generated logo directly for reliability
+                const logoData = createUMSLogo();
+                if (logoData) {
+                    doc.addImage(logoData, 'PNG', 14, 10, 30, 16);
+                }
+                
+                // Add date on right
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(now, 200, 20, { align: 'right' });
+                
+                // Add horizontal line
+                doc.setDrawColor(200, 200, 200);
+                doc.line(14, 32, 200, 32);
+                
+                // Title
+                doc.setFontSize(14);
+                doc.setTextColor(8, 61, 119);
+                doc.text('UMS KENYA - INCIDENT Report', 14, 45);
+                
+                // Report period
+                doc.setFontSize(9);
+                doc.setTextColor(100, 100, 100);
+                const periodText = (fromDate && toDate) ? `Report Period: ${fromDate.toLocaleDateString()} to ${toDate.toLocaleDateString()}` : 'Report Period: All Incidents';
+                doc.text(periodText, 14, 52);
+                
+                // Table
+                const columns = [
+                    'ID', 'Urgency', 'Description', 'Items', 'Action', 'Escalation', 'Root Cause', 'Status', 'Date'
+                ];
+                const rows = incidents.map(i => [
+                    i.identification,
+                    i.urgency,
+                    (i.description || '').substring(0, 20),
+                    i.itemsAffected || '-',
+                    (i.immediateAction || '').substring(0, 15),
+                    i.escalation || '-',
+                    (i.rootCause || '').substring(0, 15),
+                    i.resolutionStatus,
+                    new Date(i.createdAt).toLocaleDateString()
+                ]);
+                doc.autoTable({ head: [columns], body: rows, startY: 58, styles: { fontSize: 8, cellPadding: 2 } });
+                const fileName = (fromDate && toDate) ? `ums-incidents-${getDateString(fromDate)}-to-${getDateString(toDate)}.pdf` : 'ums-incidents.pdf';
+                doc.save(fileName);
+                showToast('Incidents exported (PDF)');
+            } catch(error) {
+                console.error('PDF export error:', error);
+                showToast('Error exporting PDF: ' + error.message);
+            }
+        }
+
+        function openDocumentModal() {
+            document.getElementById('documentForm').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('docDate').value = today;
+            document.getElementById('documentModal').classList.add('active');
+        }
+
+        function saveDocument(e) {
+            e.preventDefault();
+            const file = document.getElementById('docFile').files[0];
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                const doc = {
+                    id: Date.now(),
+                    title: document.getElementById('docTitle').value,
+                    date: document.getElementById('docDate').value,
+                    vendor: document.getElementById('docVendor').value,
+                    notes: document.getElementById('docNotes').value,
+                    filename: file.name,
+                    filedata: event.target.result
+                };
+
+                DataManager.saveDocument(doc);
+                closeModal('documentModal');
+                loadDocuments();
+                showToast('Document uploaded!');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function downloadDocument(id) {
+            const documents = DataManager.getDocuments();
+            const doc = documents.find(d => d.id === id);
+            if (doc) {
+                const link = document.createElement('a');
+                link.href = doc.filedata;
+                link.download = doc.filename;
+                link.click();
+            }
+        }
+
+        function deleteDocumentItem(id) {
+            if (confirm('Delete this document?')) {
+                DataManager.deleteDocument(id);
+                loadDocuments();
+                showToast('Document deleted!');
+            }
+        }
+
+        function viewDocument(id) {
+            const documents = DataManager.getDocuments();
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+            const body = document.getElementById('viewDocumentBody');
+            let preview = '';
+            if (doc.filedata && doc.filename) {
+                const lower = doc.filename.toLowerCase();
+                if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.gif')) {
+                    preview = `<img src="${doc.filedata}" style="max-width:100%; border-radius:8px;"/>`;
+                } else if (lower.endsWith('.pdf')) {
+                    preview = `<embed src="${doc.filedata}" type="application/pdf" width="100%" height="500px" />`;
+                } else {
+                    preview = `<p style="font-size:14px;">File: <strong>${doc.filename}</strong></p>`;
+                }
+            }
+            body.innerHTML = `
+                <h3 style="margin-bottom:8px;">${doc.title}</h3>
+                <p style="color:var(--text-light); margin-bottom:8px;"><strong>${doc.vendor}</strong> • ${new Date(doc.date).toLocaleDateString()}</p>
+                <div style="margin-bottom:12px;">${preview}</div>
+                <p>${doc.notes}</p>
+                <div style="margin-top:12px;"><button class="btn btn-secondary" onclick="downloadDocument(${doc.id})">Download</button></div>
+            `;
+            document.getElementById('viewDocumentModal').classList.add('active');
+        }
+
+        // ==================== ANALYTICS ====================
+        function loadAnalytics() {
+            const issues = DataManager.getIssues();
+            const totalDowntime = issues.reduce((sum, i) => sum + i.downtime, 0);
+            const resolved = issues.filter(i => i.status === 'Resolved').length;
+            const avgTime = resolved > 0 ? Math.round(totalDowntime / resolved) : 0;
+
+            document.getElementById('analyticsTotal').textContent = issues.length;
+            document.getElementById('analyticsAvgTime').textContent = avgTime + 'h';
+            document.getElementById('analyticsDowntime').textContent = totalDowntime + 'h';
+            document.getElementById('analyticsUptime').textContent = '99.5%';
+
+            setTimeout(() => {
+                loadAnalyticsCharts();
+            }, 100);
+        }
+
+        function loadAnalyticsCharts() {
+            const issues = DataManager.getIssues();
+            
+            // Monthly chart
+            const monthlyData = {};
+            issues.forEach(i => {
+                const month = new Date(i.createdAt).toLocaleDateString('en-US', { month: 'short' });
+                monthlyData[month] = (monthlyData[month] || 0) + 1;
+            });
+
+            const ctx = document.getElementById('monthlyChart');
+            if (ctx && ctx.chart) ctx.chart.destroy();
+            if (ctx) {
+                ctx.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Object.keys(monthlyData),
+                        datasets: [{
+                            label: 'Issues',
+                            data: Object.values(monthlyData),
+                            borderColor: '#e94560',
+                            backgroundColor: 'rgba(233, 69, 96, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            // Vendor chart
+            const vendors = {};
+            issues.forEach(i => {
+                vendors[i.vendor] = (vendors[i.vendor] || 0) + 1;
+            });
+
+            const ctx2 = document.getElementById('vendorChart');
+            if (ctx2 && ctx2.chart) ctx2.chart.destroy();
+            if (ctx2) {
+                ctx2.chart = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(vendors),
+                        datasets: [{
+                            label: 'Issues by Vendor',
+                            data: Object.values(vendors),
+                            backgroundColor: ['#e94560', '#f77f00', '#06d6a0']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+                });
+            }
+        }
+
+        // ==================== USERS ====================
+        function loadUsers() {
+            const users = DataManager.getUsers();
+            const html = users.map(user => `
+                <tr>
+                    <td><strong>${user.name}</strong></td>
+                    <td>${user.username}</td>
+                    <td><span class="badge badge-${user.role === 'Admin' ? 'danger' : 'success'}">${user.role}</span></td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="editUser(${user.id})" style="font-size: 11px;">Edit</button>
+                        <button class="btn btn-secondary" onclick="deleteUserItem(${user.id})" style="font-size: 11px; background: #ffcccc;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('usersBody').innerHTML = html;
+        }
+
+        function openUserModal() {
+            document.getElementById('userForm').reset();
+            document.querySelector('#userModal .modal-header span').textContent = 'Add User';
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(id) {
+            const users = DataManager.getUsers();
+            const user = users.find(u => u.id === id);
+            if (user) {
+                document.getElementById('userName').value = user.name;
+                document.getElementById('userUsername').value = user.username;
+                document.getElementById('userPassword').value = user.password;
+                document.getElementById('userRole').value = user.role;
+                document.getElementById('userForm').dataset.id = id;
+                document.querySelector('#userModal .modal-header span').textContent = 'Edit User';
+                document.getElementById('userModal').classList.add('active');
+            }
+        }
+
+        function saveUser(e) {
+            e.preventDefault();
+            const user = {
+                id: parseInt(document.getElementById('userForm').dataset.id) || Date.now(),
+                name: document.getElementById('userName').value,
+                username: document.getElementById('userUsername').value,
+                password: document.getElementById('userPassword').value,
+                role: document.getElementById('userRole').value
+            };
+
+            DataManager.saveUser(user);
+            closeModal('userModal');
+            loadUsers();
+            showToast('User saved!');
+        }
+
+        function deleteUserItem(id) {
+            const currentUser = DataManager.getCurrentUser();
+            if (currentUser.id === id) {
+                alert('Cannot delete your own account!');
+                return;
+            }
+            if (confirm('Delete this user?')) {
+                DataManager.deleteUser(id);
+                loadUsers();
+                showToast('User deleted!');
+            }
+        }
+
+        // ==================== UTILITIES ====================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if (id === 'issueModal') delete document.getElementById('issueForm').dataset.id;
+            if (id === 'passwordModal') delete document.getElementById('passwordForm').dataset.id;
+            if (id === 'userModal') delete document.getElementById('userForm').dataset.id;
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Desktop notifications
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    // no-op
+                });
+            }
+        }
+
+        function sendDesktopNotification(message, priority) {
+            if (!('Notification' in window)) return;
+            if (Notification.permission !== 'granted') return;
+            try {
+                const notif = new Notification('UMS Vendor', { body: message });
+                setTimeout(() => notif.close(), 8000);
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function updateNotificationBadge() {
+            const notifications = DataManager.getNotifications();
+            const badge = document.getElementById('notificationBadge');
+            if (notifications.length > 0) {
+                badge.textContent = Math.min(notifications.length, 9);
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Load profile into settings
+        function loadProfile() {
+            const user = DataManager.getCurrentUser();
+            if (!user) return;
+            document.getElementById('profileEmail').value = user.username.includes('@') ? user.username : user.username + '@company.com';
+            document.getElementById('profileFullName').value = user.name || '';
+            document.getElementById('profilePhone').value = user.phone || '';
+        }
+
+        function saveProfile(e) {
+            e.preventDefault();
+            const user = DataManager.getCurrentUser();
+            if (!user) return;
+            user.name = document.getElementById('profileFullName').value;
+            user.phone = document.getElementById('profilePhone').value;
+            DataManager.saveUser(user);
+            DataManager.setCurrentUser(user);
+            document.getElementById('userName').textContent = user.name;
+            showToast('Profile updated');
+        }
+
+        function changePassword(e) {
+            e.preventDefault();
+            const user = DataManager.getCurrentUser();
+            if (!user) return alert('No user');
+            const current = document.getElementById('currentPassword').value;
+            const next = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmNewPassword').value;
+            if (current !== user.password) return alert('Current password is incorrect');
+            if (next.length < 6) return alert('New password must be at least 6 characters');
+            if (next !== confirm) return alert('Passwords do not match');
+            user.password = next;
+            DataManager.saveUser(user);
+            DataManager.setCurrentUser(user);
+            showToast('Password updated');
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            
+            const notifications = DataManager.getNotifications();
+            const html = notifications.map(n => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <strong>${n.message}</strong>
+                            <p style="color: var(--text-light); font-size: 11px; margin-top: 4px;">
+                                ${new Date(n.timestamp).toLocaleTimeString()}
+                            </p>
+                        </div>
+                        <span class="badge badge-${n.priority === 'high' ? 'warning' : 'success'}">${n.priority}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('notificationList').innerHTML = html || '<div style="padding: 20px; text-align: center; color: var(--text-light);">No notifications</div>';
+        }
+
+        function clearNotifications() {
+            DataManager.clearNotifications();
+            toggleNotifications();
+            showToast('Notifications cleared!');
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            const btn = document.getElementById('darkModeHeaderBtn');
+            if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function exportAllData() {
+            const data = {
+                issues: DataManager.getIssues(),
+                passwords: DataManager.getPasswords(),
+                documents: DataManager.getDocuments()
+            };
+
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ums-vendor-backup.json';
+            a.click();
+            showToast('Data exported!');
+        }
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            const btn = document.getElementById('darkModeHeaderBtn');
+            if (btn) btn.textContent = '☀️';
+        }
+
+        // Update notification badge on load
+        updateNotificationBadge();
+    </script>
+
+    <script>
+        // PWA: beforeinstallprompt handling and service worker registration
+        let deferredInstallPrompt = null;
+        const installBtnEl = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            if (installBtnEl) installBtnEl.style.display = 'inline-block';
+        });
+
+        async function promptInstall() {
+            if (!deferredInstallPrompt) return;
+            deferredInstallPrompt.prompt();
+            const choiceResult = await deferredInstallPrompt.userChoice;
+            if (choiceResult.outcome === 'accepted') {
+                showToast('App install accepted');
+            } else {
+                showToast('App install dismissed');
+            }
+            deferredInstallPrompt = null;
+            if (installBtnEl) installBtnEl.style.display = 'none';
+        }
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            if (installBtnEl) installBtnEl.style.display = 'none';
+            showToast('App installed');
+        });
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.warn('Service Worker registration failed', err));
+        }
+    </script>
+</body>
+</html>
