@@ -1,3 +1,4 @@
+
 const CACHE_NAME = 'ums-vendor-v1';
 const ASSETS_TO_CACHE = [
   '.',
@@ -33,4 +34,3 @@ self.addEventListener('fetch', event => {
       }).catch(() => caches.match('/ums-vendor.html'));
     })
   );
-});

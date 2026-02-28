@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#1e3a8a">
     <title>UMS Vendor Tracker</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%230b5ea8' width='100' height='100'/%3E%3Ctext x='50' y='60' font-size='70' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'%3EUMS%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -1099,9 +1100,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
             </form>
-            <div style="margin-top: 20px; text-align: center; color: var(--text-light); font-size: 12px;">
-                Demo: admin/admin123 or user/user123
-            </div>
         </div>
     </div>
 
@@ -1428,8 +1426,7 @@
                                 <form id="profileForm" onsubmit="saveProfile(event)" style="padding: 20px 0;">
                                     <div class="form-row full">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-input" id="profileEmail" readonly>
-                                        <small style="color:var(--text-light); font-size:12px;">Email cannot be changed</small>
+                                        <input type="email" class="form-input" id="profileEmail" required>
                                     </div>
                                     <div class="form-row">
                                         <div>
