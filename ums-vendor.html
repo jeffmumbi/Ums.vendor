@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- favicon for browser tab -->
+    <link rel="icon" href="https://umskenya.com/wp-content/uploads/2024/07/umslogo-e1722428157937-120x64.png" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -1099,9 +1101,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
             </form>
-            <div style="margin-top: 20px; text-align: center; color: var(--text-light); font-size: 12px;">
-                Demo: admin/admin123 or user/user123
-            </div>
         </div>
     </div>
 
@@ -1582,7 +1581,7 @@
                     <div class="form-row">
                         <div>
                             <label class="form-label">Username</label>
-                            <input type="text" class="form-input" id="passwordUsername" required>
+                            <input type="email" class="form-input" id="passwordUsername" placeholder="" required>
                         </div>
                         <div>
                             <label class="form-label">Employee</label>
@@ -1885,7 +1884,7 @@
                     {
                         id: 1,
                         system: 'Email System',
-                        username: 'admin@company.com',
+                        username: '',
                         employee: 'John Doe',
                         expiryDate: new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
                         expiryTime: '09:00',
