@@ -1731,62 +1731,242 @@
             </div>
             <form id="incidentForm" onsubmit="saveIncident(event)">
                 <div class="modal-body">
+                    <h3 style="margin-bottom:8px;">INCIDENT REPORT FORM</h3>
+                    <p style="font-size:13px; color:var(--text-light); margin-bottom:12px;">UMS KENYA – INCIDENT / OCCURRENCE REPORT FORM — Form Code: UMS-INC-01</p>
+
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Department</label>
+                            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                                <label><input type="checkbox" name="incidentDept" value="Sales"> Sales</label>
+                                <label><input type="checkbox" name="incidentDept" value="Procurement/Warehouse"> Procurement/Warehouse</label>
+                                <label><input type="checkbox" name="incidentDept" value="Finance"> Finance</label>
+                                <label><input type="checkbox" name="incidentDept" value="Customer Service & IT"> Customer Service & IT</label>
+                                <label><input type="checkbox" name="incidentDept" value="HR/Admin"> HR/Admin</label>
+                                <label><input type="checkbox" name="incidentDept" value="Other"> Other</label>
+                            </div>
+                            <input type="text" class="form-input" id="incidentDeptOther" placeholder="If Other, specify" style="margin-top:8px;">
+                        </div>
+                    </div>
+
                     <div class="form-row full">
-                        <label class="form-label">Incident Identification</label>
-                        <input type="text" class="form-input" id="incidentIdentification" required>
+                        <label class="form-label">Incident Type</label>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label><input type="checkbox" name="incidentType" value="Workplace Safety"> Workplace Safety (Injury/near-miss)</label>
+                            <label><input type="checkbox" name="incidentType" value="Logistics Loss"> Logistics Loss / Missing Goods</label>
+                            <label><input type="checkbox" name="incidentType" value="Theft"> Theft / Suspected Theft</label>
+                            <label><input type="checkbox" name="incidentType" value="Property Damage"> Property Damage</label>
+                            <label><input type="checkbox" name="incidentType" value="Customer Complaint"> Customer Complaint (Major)</label>
+                            <label><input type="checkbox" name="incidentType" value="System Outage"> System Outage / Downtime</label>
+                            <label><input type="checkbox" name="incidentType" value="Data Breach"> Data Protection / Confidentiality Breach</label>
+                            <label><input type="checkbox" name="incidentType" value="Fraud"> Fraud / Cash Loss</label>
+                            <label><input type="checkbox" name="incidentType" value="Vendor Issue"> Vendor/Supplier Issue</label>
+                            <label><input type="checkbox" name="incidentType" value="Other"> Other</label>
+                            <input type="text" class="form-input" id="incidentTypeOther" placeholder="If Other, specify" style="margin-top:6px;">
+                        </div>
                     </div>
-                    <div class="form-row full">
-                        <label class="form-label">Incident Description (What happened?)</label>
-                        <textarea class="form-textarea" id="incidentDescription" required></textarea>
-                    </div>
+
                     <div class="form-row">
                         <div>
-                            <label class="form-label">Items / Assets / Goods Affected</label>
-                            <input type="text" class="form-input" id="incidentItems">
-                        </div>
-                        <div>
-                            <label class="form-label">Immediate Action Taken</label>
-                            <input type="text" class="form-input" id="incidentImmediate">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Urgency</label>
-                            <select class="form-select" id="incidentUrgency" required>
-                                <option value="">Select Urgency</option>
-                                <option>Critical</option>
-                                <option>High</option>
-                                <option>Major</option>
-                                <option>Moderate</option>
-                                <option>Minor</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label">Escalation</label>
-                            <input type="text" class="form-input" id="incidentEscalation">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label class="form-label">Incident Date (Allow Backdating)</label>
+                            <label class="form-label">A) Incident Identification</label>
+                            <label class="form-label">Date of Incident</label>
                             <input type="date" class="form-input" id="incidentDate" required>
                         </div>
-                    </div>
-                    <div class="form-row full">
-                        <label class="form-label">Root Cause</label>
-                        <textarea class="form-textarea" id="incidentRootCause"></textarea>
-                    </div>
-                    <div class="form-row">
                         <div>
-                            <label class="form-label">Resolution Status</label>
-                            <select class="form-select" id="incidentResolutionStatus" required>
-                                <option>Pending</option>
-                                <option>Closed</option>
-                                <option>Resolved</option>
-                                <option>Escalated</option>
-                            </select>
+                            <label class="form-label">Time of Incident</label>
+                            <input type="time" class="form-input" id="incidentTime">
                         </div>
                     </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Date Reported</label>
+                            <input type="date" class="form-input" id="incidentReportedDate">
+                        </div>
+                        <div>
+                            <label class="form-label">Location</label>
+                            <select class="form-select" id="incidentLocation">
+                                <option value="Office">Office</option>
+                                <option value="Warehouse">Warehouse</option>
+                                <option value="Customer Site">Customer Site</option>
+                                <option value="In Transit">In Transit</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" class="form-input" id="incidentLocationOther" placeholder="If Other, specify" style="margin-top:6px;">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label class="form-label">Reported By (Name & Title)</label>
+                            <input type="text" class="form-input" id="incidentReportedBy">
+                        </div>
+                        <div>
+                            <label class="form-label">Witnesses (if any)</label>
+                            <input type="text" class="form-input" id="incidentWitnesses" placeholder="Comma-separated names">
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">Persons Involved</label>
+                        <input type="text" class="form-input" id="incidentPersonsInvolved" placeholder="Names / titles">
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">B) Incident Description (Write facts only)</label>
+                        <textarea class="form-textarea" id="incidentDescription" required></textarea>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">C) Items / Assets / Goods Affected (if applicable)</label>
+                        <input type="text" class="form-input" id="incidentItemDescription" placeholder="Item description">
+                        <div style="display:flex; gap:8px; margin-top:6px;">
+                            <input type="number" class="form-input" id="incidentItemQuantity" placeholder="Quantity">
+                            <input type="text" class="form-input" id="incidentSerials" placeholder="Serial Numbers">
+                            <input type="number" class="form-input" id="incidentEstValue" placeholder="Estimated Value (KES)">
+                        </div>
+                        <div style="margin-top:8px;">
+                            <label><input type="checkbox" name="incidentDocs" value="Delivery Note"> Delivery Note</label>
+                            <label><input type="checkbox" name="incidentDocs" value="Warehouse Transfer Form"> Warehouse Transfer Form</label>
+                            <label><input type="checkbox" name="incidentDocs" value="Invoice"> Invoice</label>
+                            <label><input type="checkbox" name="incidentDocs" value="CCTV Evidence"> CCTV Evidence</label>
+                            <label><input type="checkbox" name="incidentDocs" value="Photos"> Photos</label>
+                            <label><input type="checkbox" name="incidentDocs" value="Other"> Other</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">D) Immediate Impact Assessment</label>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <div>
+                                <strong>1. Safety Impact</strong>
+                                <div><label><input type="checkbox" name="safetyImpact" value="Injury"> Injury</label></div>
+                                <div><label><input type="checkbox" name="safetyImpact" value="Near-miss"> Near-miss</label></div>
+                                <div><label><input type="checkbox" name="safetyImpact" value="No injury"> No injury</label></div>
+                                <input type="text" class="form-input" id="safetyInjuryName" placeholder="If injury: name">
+                                <input type="text" class="form-input" id="safetyInjuryNature" placeholder="Nature">
+                            </div>
+                            <div>
+                                <strong>2. Operational Impact</strong>
+                                <div><label><input type="checkbox" name="operationalImpact" value="Delay in delivery"> Delay in delivery</label></div>
+                                <div><label><input type="checkbox" name="operationalImpact" value="Stock shortage"> Stock shortage</label></div>
+                                <div><label><input type="checkbox" name="operationalImpact" value="Customer downtime"> Customer downtime</label></div>
+                                <div><label><input type="checkbox" name="operationalImpact" value="Missed revenue"> Missed revenue</label></div>
+                                <div><label><input type="checkbox" name="operationalImpact" value="Reputational risk"> Reputational risk</label></div>
+                            </div>
+                            <div>
+                                <strong>3. Financial Impact</strong>
+                                <div><label><input type="checkbox" name="financialImpact" value="Loss confirmed"> Loss confirmed</label></div>
+                                <div><label><input type="checkbox" name="financialImpact" value="Loss suspected"> Loss suspected</label></div>
+                                <div><label><input type="checkbox" name="financialImpact" value="No loss"> No loss</label></div>
+                                <input type="number" class="form-input" id="financialEstValue" placeholder="Estimated impact (KES)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">E) Immediate Action Taken (Containment)</label>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label><input type="checkbox" name="immediateAction" value="HOD Notified"> Incident escalated to HOD</label>
+                            <label><input type="checkbox" name="immediateAction" value="Customer Informed"> Customer informed</label>
+                            <label><input type="checkbox" name="immediateAction" value="Stock Isolated"> Stock isolated / held</label>
+                            <label><input type="checkbox" name="immediateAction" value="System Suspended"> System access suspended</label>
+                            <label><input type="checkbox" name="immediateAction" value="Police Report"> Police report / OB obtained</label>
+                            <label><input type="checkbox" name="immediateAction" value="Medical Attention"> Medical attention provided</label>
+                            <label><input type="checkbox" name="immediateAction" value="Vendor Notified"> Vendor notified</label>
+                            <label><input type="checkbox" name="immediateAction" value="Other"> Other</label>
+                        </div>
+                        <textarea class="form-textarea" id="immediateActionDetails" placeholder="Details"></textarea>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">F) Classification (Severity & Urgency)</label>
+                        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                            <div>
+                                <strong>Severity Level</strong>
+                                <div><label><input type="radio" name="severityLevel" value="Level 1"> Level 1 – Minor</label></div>
+                                <div><label><input type="radio" name="severityLevel" value="Level 2"> Level 2 – Moderate</label></div>
+                                <div><label><input type="radio" name="severityLevel" value="Level 3"> Level 3 – Major</label></div>
+                                <div><label><input type="radio" name="severityLevel" value="Level 4"> Level 4 – Critical</label></div>
+                            </div>
+                            <div>
+                                <strong>Urgency</strong>
+                                <div><label><input type="radio" name="urgencyLevel" value="Immediate"> Immediate (same day)</label></div>
+                                <div><label><input type="radio" name="urgencyLevel" value="24h"> 24 hours</label></div>
+                                <div><label><input type="radio" name="urgencyLevel" value="72h"> 72 hours</label></div>
+                                <div><label><input type="radio" name="urgencyLevel" value="Routine"> Routine</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">G) Escalation & Approvals</label>
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                            <div>
+                                <label><input type="checkbox" id="hodNotified"> HOD Notified</label>
+                                <input type="datetime-local" id="hodNotifiedAt" class="form-input">
+                            </div>
+                            <div>
+                                <label><input type="checkbox" id="gmNotified"> GM Notified</label>
+                                <input type="datetime-local" id="gmNotifiedAt" class="form-input">
+                            </div>
+                            <div>
+                                <label><input type="checkbox" id="boardNotified"> Board Notified</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">H) Reporter Declaration</label>
+                        <p style="font-size:13px;">I confirm the above is true to the best of my knowledge.</p>
+                        <input type="text" class="form-input" id="reporterName" placeholder="Name">
+                        <input type="text" class="form-input" id="reporterSignature" placeholder="Signature (type name)">
+                        <input type="date" class="form-input" id="reporterDate">
+                    </div>
+
+                    <hr>
+                    <h4 style="margin-top:8px;">ROOT CAUSE ANALYSIS (RCA)</h4>
+                    <div class="form-row full">
+                        <label class="form-label">Incident Summary (Brief)</label>
+                        <textarea class="form-textarea" id="rcaSummary"></textarea>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">5 WHYS Analysis</label>
+                        <textarea class="form-textarea" id="rca5whys" placeholder="1. Why...\n2. Why...\n..."></textarea>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Root Cause Category</label>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <label><input type="checkbox" name="rcaCategory" value="People"> People</label>
+                            <label><input type="checkbox" name="rcaCategory" value="Process"> Process</label>
+                            <label><input type="checkbox" name="rcaCategory" value="Equipment"> Equipment/Tools</label>
+                            <label><input type="checkbox" name="rcaCategory" value="Environment"> Environment</label>
+                            <label><input type="checkbox" name="rcaCategory" value="System"> System/Technology</label>
+                            <label><input type="checkbox" name="rcaCategory" value="Supplier"> Supplier/3rd Party</label>
+                            <label><input type="checkbox" name="rcaCategory" value="Management"> Management oversight</label>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h4>CORRECTIVE ACTION & PREVENTIVE ACTION (CAPA)</h4>
+                    <div class="form-row full">
+                        <label class="form-label">Immediate Corrective Actions (Short-term Fix)</label>
+                        <textarea class="form-textarea" id="capaImmediate" placeholder="Action owner, deadline, status"></textarea>
+                    </div>
+                    <div class="form-row full">
+                        <label class="form-label">Preventive Actions (Long-term)</label>
+                        <textarea class="form-textarea" id="capaPreventive" placeholder="Preventive measures, owner, deadline"></textarea>
+                    </div>
+
+                    <div class="form-row full">
+                        <label class="form-label">Verification of Effectiveness</label>
+                        <div>
+                            <label><input type="checkbox" id="verifyNoRepeat"> No repeat incident for 30/60/90 days</label>
+                            <label><input type="checkbox" id="verifyAudit"> Improved audit results</label>
+                            <label><input type="checkbox" id="verifyUptime"> System uptime improved</label>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('incidentModal')">Cancel</button>
@@ -1972,12 +2152,51 @@
                     {
                         id: 1,
                         identification: 'INC-2026-0001',
+                        incidentDate: new Date('2026-02-28').toISOString(),
+                        incidentTime: '14:30',
+                        reportedDate: new Date('2026-02-28').toISOString(),
+                        department: ['Customer Service & IT'],
+                        deptOther: '',
+                        incidentType: ['Workplace Safety'],
+                        typeOther: '',
+                        location: 'Warehouse',
+                        locationOther: '',
+                        reportedBy: 'Jane Admin - HOD IT',
+                        witnesses: 'John Doe',
+                        personsInvolved: 'Technician A',
                         description: 'Minor spill in server room causing brief access delays',
-                        itemsAffected: 'Server Rack 3',
-                        immediateAction: 'Evacuated area and cleaned spill',
-                        urgency: 'Minor',
-                        escalation: 'No',
-                        rootCause: 'Condensation from AC unit',
+                        itemDescription: 'Server Rack 3',
+                        itemQuantity: 1,
+                        serials: 'SRV-003',
+                        itemEstValue: 25000,
+                        docs: ['CCTV Evidence'],
+                        safetyImpact: ['No injury'],
+                        safetyInjuryName: '',
+                        safetyInjuryNature: '',
+                        operationalImpact: ['Delay in delivery'],
+                        financialImpact: ['No loss'],
+                        financialEstValue: 0,
+                        immediateAction: ['Stock Isolated','Evacuated area'],
+                        immediateActionDetails: 'Area cleaned and inspected',
+                        severityLevel: 'Level 1',
+                        urgencyLevel: 'Immediate',
+                        hodNotified: true,
+                        hodNotifiedAt: new Date('2026-02-28T15:00').toISOString(),
+                        gmNotified: false,
+                        gmNotifiedAt: '',
+                        boardNotified: false,
+                        reporterName: 'Jane Admin',
+                        reporterSignature: 'Jane Admin',
+                        reporterDate: new Date('2026-02-28').toISOString(),
+                        rcaSummary: 'Condensation from AC caused water to drip onto equipment',
+                        rca5whys: '1. Why...\n2. Why...\n3. Why...\n4. Why...\n5. Root cause',
+                        rcaCategory: ['Environment'],
+                        capaImmediate: 'Cleaned area; scheduled AC maintenance',
+                        capaPreventive: 'Install drip trays; increase AC checks monthly',
+                        verifyNoRepeat: false,
+                        verifyAudit: false,
+                        verifyUptime: false,
+                        identification: 'INC-2026-0001',
                         resolutionStatus: 'Resolved',
                         createdAt: new Date().toISOString(),
                         createdBy: 1
@@ -2783,16 +3002,80 @@
             const incidents = DataManager.getIncidents();
             const inc = incidents.find(x => x.id === id);
             if (!inc) return;
-            document.getElementById('incidentIdentification').value = inc.identification;
-            document.getElementById('incidentDescription').value = inc.description;
-            document.getElementById('incidentItems').value = inc.itemsAffected || '';
-            document.getElementById('incidentImmediate').value = inc.immediateAction || '';
-            document.getElementById('incidentUrgency').value = inc.urgency || '';
-            document.getElementById('incidentEscalation').value = inc.escalation || '';
-            const incDate = new Date(inc.createdAt || new Date());
-            document.getElementById('incidentDate').value = incDate.toISOString().split('T')[0];
-            document.getElementById('incidentRootCause').value = inc.rootCause || '';
-            document.getElementById('incidentResolutionStatus').value = inc.resolutionStatus || 'Pending';
+
+            // helper to check checkbox groups
+            const setCheckboxes = (name, values) => {
+                const nodes = document.querySelectorAll(`input[name="${name}"]`);
+                nodes.forEach(n => { n.checked = values && values.includes(n.value); });
+            };
+
+            // populate simple fields (guarding for missing elements)
+            if (document.getElementById('incidentDeptOther')) document.getElementById('incidentDeptOther').value = inc.deptOther || '';
+            setCheckboxes('incidentDept', inc.department || []);
+
+            setCheckboxes('incidentType', inc.incidentType || []);
+            if (document.getElementById('incidentTypeOther')) document.getElementById('incidentTypeOther').value = inc.typeOther || '';
+
+            if (document.getElementById('incidentDate')) {
+                const d = inc.incidentDate ? new Date(inc.incidentDate) : new Date(inc.createdAt || Date.now());
+                document.getElementById('incidentDate').value = d.toISOString().split('T')[0];
+            }
+            if (document.getElementById('incidentTime')) document.getElementById('incidentTime').value = inc.incidentTime || '';
+            if (document.getElementById('incidentReportedDate')) document.getElementById('incidentReportedDate').value = inc.reportedDate || '';
+            if (document.getElementById('incidentLocation')) document.getElementById('incidentLocation').value = inc.location || 'Office';
+            if (document.getElementById('incidentLocationOther')) document.getElementById('incidentLocationOther').value = inc.locationOther || '';
+            if (document.getElementById('incidentReportedBy')) document.getElementById('incidentReportedBy').value = inc.reportedBy || '';
+            if (document.getElementById('incidentWitnesses')) document.getElementById('incidentWitnesses').value = inc.witnesses || '';
+            if (document.getElementById('incidentPersonsInvolved')) document.getElementById('incidentPersonsInvolved').value = inc.personsInvolved || '';
+            if (document.getElementById('incidentDescription')) document.getElementById('incidentDescription').value = inc.description || '';
+
+            if (document.getElementById('incidentItemDescription')) document.getElementById('incidentItemDescription').value = inc.itemDescription || '';
+            if (document.getElementById('incidentItemQuantity')) document.getElementById('incidentItemQuantity').value = inc.itemQuantity || '';
+            if (document.getElementById('incidentSerials')) document.getElementById('incidentSerials').value = inc.serials || '';
+            if (document.getElementById('incidentEstValue')) document.getElementById('incidentEstValue').value = inc.itemEstValue || '';
+            setCheckboxes('incidentDocs', inc.docs || []);
+
+            setCheckboxes('safetyImpact', inc.safetyImpact || []);
+            if (document.getElementById('safetyInjuryName')) document.getElementById('safetyInjuryName').value = inc.safetyInjuryName || '';
+            if (document.getElementById('safetyInjuryNature')) document.getElementById('safetyInjuryNature').value = inc.safetyInjuryNature || '';
+
+            setCheckboxes('operationalImpact', inc.operationalImpact || []);
+            setCheckboxes('financialImpact', inc.financialImpact || []);
+            if (document.getElementById('financialEstValue')) document.getElementById('financialEstValue').value = inc.financialEstValue || '';
+
+            setCheckboxes('immediateAction', inc.immediateAction || []);
+            if (document.getElementById('immediateActionDetails')) document.getElementById('immediateActionDetails').value = inc.immediateActionDetails || '';
+
+            // radios
+            if (inc.severityLevel) {
+                const r = document.querySelector(`input[name="severityLevel"][value="${inc.severityLevel}"]`);
+                if (r) r.checked = true;
+            }
+            if (inc.urgencyLevel) {
+                const r2 = document.querySelector(`input[name="urgencyLevel"][value="${inc.urgencyLevel}"]`);
+                if (r2) r2.checked = true;
+            }
+
+            if (document.getElementById('hodNotified')) document.getElementById('hodNotified').checked = !!inc.hodNotified;
+            if (document.getElementById('hodNotifiedAt')) document.getElementById('hodNotifiedAt').value = inc.hodNotifiedAt || '';
+            if (document.getElementById('gmNotified')) document.getElementById('gmNotified').checked = !!inc.gmNotified;
+            if (document.getElementById('gmNotifiedAt')) document.getElementById('gmNotifiedAt').value = inc.gmNotifiedAt || '';
+            if (document.getElementById('boardNotified')) document.getElementById('boardNotified').checked = !!inc.boardNotified;
+
+            if (document.getElementById('reporterName')) document.getElementById('reporterName').value = inc.reporterName || '';
+            if (document.getElementById('reporterSignature')) document.getElementById('reporterSignature').value = inc.reporterSignature || '';
+            if (document.getElementById('reporterDate')) document.getElementById('reporterDate').value = inc.reporterDate || '';
+
+            if (document.getElementById('rcaSummary')) document.getElementById('rcaSummary').value = inc.rcaSummary || '';
+            if (document.getElementById('rca5whys')) document.getElementById('rca5whys').value = inc.rca5whys || '';
+            setCheckboxes('rcaCategory', inc.rcaCategory || []);
+
+            if (document.getElementById('capaImmediate')) document.getElementById('capaImmediate').value = inc.capaImmediate || '';
+            if (document.getElementById('capaPreventive')) document.getElementById('capaPreventive').value = inc.capaPreventive || '';
+            if (document.getElementById('verifyNoRepeat')) document.getElementById('verifyNoRepeat').checked = !!inc.verifyNoRepeat;
+            if (document.getElementById('verifyAudit')) document.getElementById('verifyAudit').checked = !!inc.verifyAudit;
+            if (document.getElementById('verifyUptime')) document.getElementById('verifyUptime').checked = !!inc.verifyUptime;
+
             document.getElementById('incidentForm').dataset.id = id;
             document.querySelector('#incidentModal .modal-header span').textContent = 'Edit Incident';
             document.getElementById('incidentModal').classList.add('active');
@@ -2801,21 +3084,82 @@
         function saveIncident(e) {
             e.preventDefault();
             const id = parseInt(document.getElementById('incidentForm').dataset.id) || null;
-            const incidentDate = document.getElementById('incidentDate').value;
-            const dateObj = new Date(incidentDate);
+
+            const collectChecks = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(n => n.value);
+
+            const incidentDate = document.getElementById('incidentDate') ? document.getElementById('incidentDate').value : '';
+            const dateObj = incidentDate ? new Date(incidentDate) : new Date();
+
+            const currentUser = DataManager.getCurrentUser();
+
             const incident = {
                 id: id,
-                identification: document.getElementById('incidentIdentification').value,
-                description: document.getElementById('incidentDescription').value,
-                itemsAffected: document.getElementById('incidentItems').value,
-                immediateAction: document.getElementById('incidentImmediate').value,
-                urgency: document.getElementById('incidentUrgency').value,
-                escalation: document.getElementById('incidentEscalation').value,
-                rootCause: document.getElementById('incidentRootCause').value,
-                resolutionStatus: document.getElementById('incidentResolutionStatus').value,
-                createdAt: dateObj.toISOString(),
-                createdBy: DataManager.getCurrentUser() ? DataManager.getCurrentUser().id : null
+                department: collectChecks('incidentDept'),
+                deptOther: document.getElementById('incidentDeptOther') ? document.getElementById('incidentDeptOther').value : '',
+                incidentType: collectChecks('incidentType'),
+                typeOther: document.getElementById('incidentTypeOther') ? document.getElementById('incidentTypeOther').value : '',
+                incidentDate: incidentDate ? new Date(incidentDate).toISOString() : new Date().toISOString(),
+                incidentTime: document.getElementById('incidentTime') ? document.getElementById('incidentTime').value : '',
+                reportedDate: document.getElementById('incidentReportedDate') ? document.getElementById('incidentReportedDate').value : '',
+                location: document.getElementById('incidentLocation') ? document.getElementById('incidentLocation').value : '',
+                locationOther: document.getElementById('incidentLocationOther') ? document.getElementById('incidentLocationOther').value : '',
+                reportedBy: document.getElementById('incidentReportedBy') ? document.getElementById('incidentReportedBy').value : '',
+                witnesses: document.getElementById('incidentWitnesses') ? document.getElementById('incidentWitnesses').value : '',
+                personsInvolved: document.getElementById('incidentPersonsInvolved') ? document.getElementById('incidentPersonsInvolved').value : '',
+                description: document.getElementById('incidentDescription') ? document.getElementById('incidentDescription').value : '',
+
+                itemDescription: document.getElementById('incidentItemDescription') ? document.getElementById('incidentItemDescription').value : '',
+                itemQuantity: document.getElementById('incidentItemQuantity') ? parseInt(document.getElementById('incidentItemQuantity').value) || 0 : 0,
+                serials: document.getElementById('incidentSerials') ? document.getElementById('incidentSerials').value : '',
+                itemEstValue: document.getElementById('incidentEstValue') ? parseFloat(document.getElementById('incidentEstValue').value) || 0 : 0,
+                docs: collectChecks('incidentDocs'),
+
+                safetyImpact: collectChecks('safetyImpact'),
+                safetyInjuryName: document.getElementById('safetyInjuryName') ? document.getElementById('safetyInjuryName').value : '',
+                safetyInjuryNature: document.getElementById('safetyInjuryNature') ? document.getElementById('safetyInjuryNature').value : '',
+                operationalImpact: collectChecks('operationalImpact'),
+                financialImpact: collectChecks('financialImpact'),
+                financialEstValue: document.getElementById('financialEstValue') ? parseFloat(document.getElementById('financialEstValue').value) || 0 : 0,
+
+                immediateAction: collectChecks('immediateAction'),
+                immediateActionDetails: document.getElementById('immediateActionDetails') ? document.getElementById('immediateActionDetails').value : '',
+
+                severityLevel: (document.querySelector('input[name="severityLevel"]:checked') || {}).value || '',
+                urgencyLevel: (document.querySelector('input[name="urgencyLevel"]:checked') || {}).value || '',
+
+                hodNotified: !!(document.getElementById('hodNotified') && document.getElementById('hodNotified').checked),
+                hodNotifiedAt: document.getElementById('hodNotifiedAt') ? document.getElementById('hodNotifiedAt').value : '',
+                gmNotified: !!(document.getElementById('gmNotified') && document.getElementById('gmNotified').checked),
+                gmNotifiedAt: document.getElementById('gmNotifiedAt') ? document.getElementById('gmNotifiedAt').value : '',
+                boardNotified: !!(document.getElementById('boardNotified') && document.getElementById('boardNotified').checked),
+
+                reporterName: document.getElementById('reporterName') ? document.getElementById('reporterName').value : '',
+                reporterSignature: document.getElementById('reporterSignature') ? document.getElementById('reporterSignature').value : '',
+                reporterDate: document.getElementById('reporterDate') ? document.getElementById('reporterDate').value : '',
+
+                rcaSummary: document.getElementById('rcaSummary') ? document.getElementById('rcaSummary').value : '',
+                rca5whys: document.getElementById('rca5whys') ? document.getElementById('rca5whys').value : '',
+                rcaCategory: collectChecks('rcaCategory'),
+
+                capaImmediate: document.getElementById('capaImmediate') ? document.getElementById('capaImmediate').value : '',
+                capaPreventive: document.getElementById('capaPreventive') ? document.getElementById('capaPreventive').value : '',
+                verifyNoRepeat: !!(document.getElementById('verifyNoRepeat') && document.getElementById('verifyNoRepeat').checked),
+                verifyAudit: !!(document.getElementById('verifyAudit') && document.getElementById('verifyAudit').checked),
+                verifyUptime: !!(document.getElementById('verifyUptime') && document.getElementById('verifyUptime').checked),
+
+                // legacy/backwards fields
+                identification: (document.getElementById('incidentIdentification') ? document.getElementById('incidentIdentification').value : '') || (id ? '' : `INC-${Date.now()}`),
+                resolutionStatus: (document.getElementById('incidentResolutionStatus') ? document.getElementById('incidentResolutionStatus').value : '') || 'Pending',
+
+                createdAt: id ? undefined : dateObj.toISOString(),
+                createdBy: currentUser ? currentUser.id : null
             };
+
+            // preserve createdAt when editing
+            if (id) {
+                const existing = DataManager.getIncidents().find(x => x.id === id) || {};
+                incident.createdAt = existing.createdAt || new Date().toISOString();
+            }
 
             DataManager.saveIncident(incident);
             closeModal('incidentModal');
@@ -2836,18 +3180,31 @@
             const inc = incidents.find(x => x.id === id);
             if (!inc) return;
             const body = document.getElementById('viewIncidentBody');
-            const incidentDate = new Date(inc.createdAt).toLocaleDateString();
+            const incidentDate = inc.incidentDate ? new Date(inc.incidentDate).toLocaleString() : (inc.createdAt ? new Date(inc.createdAt).toLocaleString() : 'N/A');
+
+            const formatList = (arr) => (arr && arr.length) ? arr.join(', ') : '-';
+
             body.innerHTML = `
-                <h3 style="margin-bottom:8px;">UMS KENYA \u2013 INCIDENT Report</h3>
-                <p><strong>Identification:</strong> ${inc.identification}</p>
-                <p><strong>Date:</strong> ${incidentDate}</p>
-                <p><strong>Urgency:</strong> ${inc.urgency}</p>
-                <p><strong>Description:</strong><br/>${inc.description}</p>
-                <p><strong>Items / Assets Affected:</strong><br/>${inc.itemsAffected || '-'}</p>
-                <p><strong>Immediate Action Taken:</strong><br/>${inc.immediateAction || '-'}</p>
-                <p><strong>Escalation:</strong> ${inc.escalation || '-'}</p>
-                <p><strong>Root Cause:</strong><br/>${inc.rootCause || '-'}</p>
-                <p><strong>Resolution Status:</strong> ${inc.resolutionStatus}</p>
+                <h3 style="margin-bottom:8px;">UMS KENYA – INCIDENT Report</h3>
+                <p style="color:var(--text-light); margin-bottom:8px;\"><strong>Date:</strong> ${incidentDate} • <strong>Status:</strong> ${inc.resolutionStatus || 'Pending'}</p>
+                <p><strong>Department:</strong> ${formatList(inc.department)}</p>
+                <p><strong>Type:</strong> ${formatList(inc.incidentType)} ${inc.typeOther ? '• ' + inc.typeOther : ''}</p>
+                <p><strong>Location:</strong> ${inc.location || '-'} ${inc.locationOther ? '• ' + inc.locationOther : ''}</p>
+                <p><strong>Reported By:</strong> ${inc.reportedBy || '-' } • <strong>Witnesses:</strong> ${inc.witnesses || '-'}</p>
+                <hr>
+                <p><strong>Description (Facts):</strong><br/>${inc.description || '-'}</p>
+                <p><strong>Items / Assets Affected:</strong><br/>${inc.itemDescription || '-'} • Qty: ${inc.itemQuantity || 0} • Serials: ${inc.serials || '-' } • Est. Value: ${inc.itemEstValue || 0}</p>
+                <p><strong>Immediate Action Taken:</strong><br/>${formatList(inc.immediateAction)}<br/>${inc.immediateActionDetails || ''}</p>
+                <hr>
+                <h4>ROOT CAUSE ANALYSIS</h4>
+                <p><strong>Summary:</strong><br/>${inc.rcaSummary || '-'}</p>
+                <p><strong>5 WHYS:</strong><br/>${inc.rca5whys || '-'}</p>
+                <p><strong>Root Cause Category:</strong> ${formatList(inc.rcaCategory)}</p>
+                <hr>
+                <h4>CAPA</h4>
+                <p><strong>Immediate Corrective Actions:</strong><br/>${inc.capaImmediate || '-'}</p>
+                <p><strong>Preventive Actions:</strong><br/>${inc.capaPreventive || '-'}</p>
+                <p><strong>Verification:</strong><br/>${inc.verifyNoRepeat ? 'No repeat confirmed • ' : ''}${inc.verifyAudit ? 'Audit improved • ' : ''}${inc.verifyUptime ? 'Uptime improved' : ''}</p>
             `;
             document.getElementById('viewIncidentModal').classList.add('active');
         }
@@ -2857,15 +3214,30 @@
             const incidents = (fromDate && toDate) ? filterByDateRange(allIncidents, fromDate, toDate) : allIncidents;
             if (!incidents || incidents.length === 0) return showToast('No incidents to export');
             const data = incidents.map(i => ({
-                Identification: i.identification,
-                Urgency: i.urgency,
-                Description: i.description,
-                ItemsAffected: i.itemsAffected || '-',
-                ImmediateAction: i.immediateAction || '-',
-                Escalation: i.escalation || '-',
-                RootCause: i.rootCause || '-',
-                ResolutionStatus: i.resolutionStatus,
-                CreatedAt: new Date(i.createdAt).toLocaleString()
+                Identification: i.identification || '',
+                'Incident Date': i.incidentDate ? new Date(i.incidentDate).toLocaleString() : (i.createdAt ? new Date(i.createdAt).toLocaleString() : ''),
+                'Incident Time': i.incidentTime || '',
+                Department: (i.department || []).join(', '),
+                'Reported By': i.reportedBy || '',
+                'Location': i.location || i.locationOther || '',
+                'Description': i.description || '',
+                'Items Affected': i.itemDescription || '',
+                'Quantity': i.itemQuantity || '',
+                'Serials': i.serials || '',
+                'Estimated Value (KES)': i.itemEstValue || '',
+                'Immediate Action': (i.immediateAction || []).join('; '),
+                'Immediate Details': i.immediateActionDetails || '',
+                'Severity': i.severityLevel || '',
+                'Urgency': i.urgencyLevel || '',
+                'RCA Summary': i.rcaSummary || '',
+                'RCA 5WHYS': i.rca5whys || '',
+                'RCA Category': (i.rcaCategory || []).join(', '),
+                'CAPA Immediate': i.capaImmediate || '',
+                'CAPA Preventive': i.capaPreventive || '',
+                'Verification': `${i.verifyNoRepeat ? 'NoRepeat;' : ''} ${i.verifyAudit ? 'Audit;' : ''} ${i.verifyUptime ? 'Uptime' : ''}`,
+                'Status': i.resolutionStatus || '',
+                'Created At': new Date(i.createdAt || Date.now()).toLocaleString(),
+                'Created By': i.createdBy || ''
             }));
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
@@ -3120,20 +3492,25 @@
                 const periodText = (fromDate && toDate) ? `Report Period: ${fromDate.toLocaleDateString()} to ${toDate.toLocaleDateString()}` : 'Report Period: All Incidents';
                 doc.text(periodText, 14, 52);
                 
-                // Table
+                // Table (include key fields; truncate long text)
                 const columns = [
-                    'ID', 'Urgency', 'Description', 'Items', 'Action', 'Escalation', 'Root Cause', 'Status', 'Date'
+                    'ID', 'Incident Date', 'Time', 'Department', 'Reported By', 'Location', 'Description', 'Items', 'Qty', 'Serials', 'Immediate Action', 'RCA Summary', 'CAPA', 'Status'
                 ];
                 const rows = incidents.map(i => [
-                    i.identification,
-                    i.urgency,
-                    (i.description || '').substring(0, 20),
-                    i.itemsAffected || '-',
-                    (i.immediateAction || '').substring(0, 15),
-                    i.escalation || '-',
-                    (i.rootCause || '').substring(0, 15),
-                    i.resolutionStatus,
-                    new Date(i.createdAt).toLocaleDateString()
+                    i.identification || '',
+                    i.incidentDate ? new Date(i.incidentDate).toLocaleDateString() : (i.createdAt ? new Date(i.createdAt).toLocaleDateString() : ''),
+                    i.incidentTime || '',
+                    (i.department || []).join(', '),
+                    i.reportedBy || '',
+                    i.location || i.locationOther || '',
+                    (i.description || '').substring(0, 40),
+                    i.itemDescription || '',
+                    i.itemQuantity || '',
+                    i.serials || '',
+                    (i.immediateAction || []).join('; ').substring(0, 30),
+                    (i.rcaSummary || '').substring(0, 30),
+                    (i.capaImmediate || '').substring(0, 30),
+                    i.resolutionStatus || ''
                 ]);
                 doc.autoTable({ head: [columns], body: rows, startY: 58, styles: { fontSize: 8, cellPadding: 2 } });
                 const fileName = (fromDate && toDate) ? `ums-incidents-${getDateString(fromDate)}-to-${getDateString(toDate)}.pdf` : 'ums-incidents.pdf';
