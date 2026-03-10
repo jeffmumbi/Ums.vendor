@@ -1129,15 +1129,15 @@
                     <span class="nav-icon">📄</span>
                     <span>Documents</span>
                 </div>
-                <div class="nav-item admin-only visible" data-page="analytics" onclick="showPage('analytics')">
+                <div class="nav-item admin-only" data-page="analytics" onclick="showPage('analytics')">
                     <span class="nav-icon">📈</span>
                     <span>Analytics</span>
                 </div>
-                <div class="nav-item admin-only visible" data-page="users" onclick="showPage('users')">
+                <div class="nav-item admin-only" data-page="users" onclick="showPage('users')">
                     <span class="nav-icon">👥</span>
                     <span>Users</span>
                 </div>
-                <div class="nav-item admin-only visible" data-page="settings" onclick="showPage('settings')">
+                <div class="nav-item admin-only" data-page="settings" onclick="showPage('settings')">
                     <span class="nav-icon"><img src="https://umskenya.com/wp-content/uploads/2024/07/umslogo-e1722428157937-120x64.png" style="width:22px;height:auto;border-radius:3px;vertical-align:middle"></span>
                     <span>Settings</span>
                 </div>
@@ -1337,7 +1337,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h2 class="card-title">Upload Document</h2>
-                                <button class="btn btn-primary admin-only visible" onclick="openDocumentModal()">+ Upload</button>
+                                <button class="btn btn-primary admin-only" onclick="openDocumentModal()">+ Upload</button>
                             </div>
                             <div id="documentsList">
                                 <!-- Documents will be loaded here -->
@@ -2286,7 +2286,9 @@
 
         // ==================== ISSUES ====================
         function loadIssues() {
-            const issues = DataManager.getIssues();
+            const currentUser = DataManager.getCurrentUser();
+            const allIssues = DataManager.getIssues();
+            const issues = (currentUser && currentUser.role === 'Admin') ? allIssues : allIssues.filter(i => i.createdBy === (currentUser && currentUser.id));
             const html = issues.map(issue => `
                 <tr>
                     <td><strong>${issue.vendor}</strong></td>
@@ -2339,6 +2341,7 @@
             e.preventDefault();
             const issueDate = document.getElementById('issueDate').value;
             const dateObj = new Date(issueDate);
+            const currentUser = DataManager.getCurrentUser();
             const issue = {
                 id: parseInt(document.getElementById('issueForm').dataset.id) || null,
                 vendor: document.getElementById('issueVendor').value,
@@ -2350,7 +2353,8 @@
                 rca: document.getElementById('issueRCA').value,
                 status: document.getElementById('issueStatus').value,
                 resolution: document.getElementById('issueResolution').value,
-                createdAt: dateObj.toISOString()
+                createdAt: dateObj.toISOString(),
+                createdBy: currentUser ? currentUser.id : null
             };
 
             DataManager.saveIssue(issue);
@@ -2587,7 +2591,9 @@
 
         // ==================== PASSWORDS ====================
         function loadPasswords() {
-            const passwords = DataManager.getPasswords();
+            const currentUser = DataManager.getCurrentUser();
+            const allPasswords = DataManager.getPasswords();
+            const passwords = (currentUser && currentUser.role === 'Admin') ? allPasswords : allPasswords.filter(p => p.createdBy === (currentUser && currentUser.id));
             const html = passwords.map(pwd => {
                 const daysLeft = getDaysUntilExpiry(pwd.expiryDate);
                 let status = 'Safe';
@@ -2675,6 +2681,10 @@
                 notified: false
             };
 
+            // attach owner
+            const currentUser = DataManager.getCurrentUser();
+            password.createdBy = currentUser ? currentUser.id : null;
+
             DataManager.savePassword(password);
             closeModal('passwordModal');
             loadPasswords();
@@ -2709,7 +2719,9 @@
 
         // ==================== DOCUMENTS ====================
         function loadDocuments() {
-            const documents = DataManager.getDocuments();
+            const currentUser = DataManager.getCurrentUser();
+            const allDocuments = DataManager.getDocuments();
+            const documents = (currentUser && currentUser.role === 'Admin') ? allDocuments : allDocuments.filter(d => d.createdBy === (currentUser && currentUser.id));
             const html = documents.map(doc => `
                 <div style="padding: 16px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
                     <div style="display: flex; justify-content: space-between; align-items: start;">
@@ -2733,7 +2745,9 @@
         }
 
         function loadIncidents() {
-            const incidents = DataManager.getIncidents();
+            const currentUser = DataManager.getCurrentUser();
+            const allIncidents = DataManager.getIncidents();
+            const incidents = (currentUser && currentUser.role === 'Admin') ? allIncidents : allIncidents.filter(i => i.createdBy === (currentUser && currentUser.id));
             const html = incidents.map(i => `
                 <tr>
                     <td><strong>${i.identification}</strong></td>
@@ -2795,7 +2809,8 @@
                 escalation: document.getElementById('incidentEscalation').value,
                 rootCause: document.getElementById('incidentRootCause').value,
                 resolutionStatus: document.getElementById('incidentResolutionStatus').value,
-                createdAt: dateObj.toISOString()
+                createdAt: dateObj.toISOString(),
+                createdBy: DataManager.getCurrentUser() ? DataManager.getCurrentUser().id : null
             };
 
             DataManager.saveIncident(incident);
@@ -3148,6 +3163,9 @@
                     filename: file.name,
                     filedata: event.target.result
                 };
+                // attach owner
+                const currentUser = DataManager.getCurrentUser();
+                doc.createdBy = currentUser ? currentUser.id : null;
 
                 DataManager.saveDocument(doc);
                 closeModal('documentModal');
@@ -3276,6 +3294,11 @@
 
         // ==================== USERS ====================
         function loadUsers() {
+            const currentUser = DataManager.getCurrentUser();
+            if (!currentUser || currentUser.role !== 'Admin') {
+                document.getElementById('usersBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">Access denied.</td></tr>';
+                return;
+            }
             const users = DataManager.getUsers();
             const html = users.map(user => `
                 <tr>
@@ -3293,6 +3316,8 @@
         }
 
         function openUserModal() {
+            const currentUser = DataManager.getCurrentUser();
+            if (!currentUser || currentUser.role !== 'Admin') return alert('Access denied');
             document.getElementById('userForm').reset();
             document.querySelector('#userModal .modal-header span').textContent = 'Add User';
             document.getElementById('userModal').classList.add('active');
@@ -3314,6 +3339,9 @@
 
         function saveUser(e) {
             e.preventDefault();
+            const currentUser = DataManager.getCurrentUser();
+            if (!currentUser || currentUser.role !== 'Admin') return alert('Access denied');
+
             const user = {
                 id: parseInt(document.getElementById('userForm').dataset.id) || Date.now(),
                 name: document.getElementById('userName').value,
@@ -3330,6 +3358,7 @@
 
         function deleteUserItem(id) {
             const currentUser = DataManager.getCurrentUser();
+            if (!currentUser || currentUser.role !== 'Admin') return alert('Access denied');
             if (currentUser.id === id) {
                 alert('Cannot delete your own account!');
                 return;
