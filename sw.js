@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ums-vendor-v1';
+const CACHE_NAME = 'ums-vendor-v3';
 const ASSETS_TO_CACHE = [
   '.',
   '/ums-vendor.html',
