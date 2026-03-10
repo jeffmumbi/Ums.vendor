@@ -1245,6 +1245,7 @@
                                     <tr>
                                         <th>Vendor</th>
                                         <th>System</th>
+                                        <th>Date</th>
                                         <th>Cause</th>
                                         <th>Impact</th>
                                         <th>Status</th>
@@ -1544,6 +1545,10 @@
                         <textarea class="form-textarea" id="issueRCA" required></textarea>
                     </div>
                     <div class="form-row">
+                        <div>
+                            <label class="form-label">Issue Date</label>
+                            <input type="date" class="form-input" id="issueDate" required>
+                        </div>
                         <div>
                             <label class="form-label">Status</label>
                             <select class="form-select" id="issueStatus" required>
@@ -2286,6 +2291,7 @@
                 <tr>
                     <td><strong>${issue.vendor}</strong></td>
                     <td>${issue.system}</td>
+                    <td>${issue.createdAt ? new Date(issue.createdAt).toLocaleDateString() : 'N/A'}</td>
                     <td>${issue.cause.substring(0, 30)}...</td>
                     <td><span class="badge badge-${issue.impact === 'High' ? 'danger' : issue.impact === 'Medium' ? 'warning' : 'success'}">${issue.impact}</span></td>
                     <td><span class="badge badge-${issue.status === 'Resolved' ? 'success' : issue.status === 'In Progress' ? 'warning' : 'danger'}">${issue.status}</span></td>
@@ -2297,11 +2303,13 @@
                 </tr>
             `).join('');
 
-            document.getElementById('issuesBody').innerHTML = html || '<tr><td colspan="6" style="text-align: center; padding: 40px;">No issues yet. Create one to get started!</td></tr>';
+            document.getElementById('issuesBody').innerHTML = html || '<tr><td colspan="7" style="text-align: center; padding: 40px;">No issues yet. Create one to get started!</td></tr>';
         }
 
         function openIssueModal() {
             document.getElementById('issueForm').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('issueDate').value = today;
             document.querySelector('#issueModal .modal-header span').textContent = 'Add Issue';
             document.getElementById('issueModal').classList.add('active');
         }
@@ -2319,6 +2327,8 @@
                 document.getElementById('issueRCA').value = issue.rca;
                 document.getElementById('issueStatus').value = issue.status;
                 document.getElementById('issueResolution').value = issue.resolution;
+                const issueDate = new Date(issue.createdAt || new Date());
+                document.getElementById('issueDate').value = issueDate.toISOString().split('T')[0];
                 document.getElementById('issueForm').dataset.id = id;
                 document.querySelector('#issueModal .modal-header span').textContent = 'Edit Issue';
                 document.getElementById('issueModal').classList.add('active');
@@ -2327,6 +2337,8 @@
 
         function saveIssue(e) {
             e.preventDefault();
+            const issueDate = document.getElementById('issueDate').value;
+            const dateObj = new Date(issueDate);
             const issue = {
                 id: parseInt(document.getElementById('issueForm').dataset.id) || null,
                 vendor: document.getElementById('issueVendor').value,
@@ -2337,7 +2349,8 @@
                 downtime: parseInt(document.getElementById('issueDowntime').value) || 0,
                 rca: document.getElementById('issueRCA').value,
                 status: document.getElementById('issueStatus').value,
-                resolution: document.getElementById('issueResolution').value
+                resolution: document.getElementById('issueResolution').value,
+                createdAt: dateObj.toISOString()
             };
 
             DataManager.saveIssue(issue);
@@ -2359,9 +2372,10 @@
             const issue = issues.find(i => i.id === id);
             if (!issue) return;
             const body = document.getElementById('viewIssueBody');
+            const issueDate = issue.createdAt ? new Date(issue.createdAt).toLocaleDateString() : 'N/A';
             body.innerHTML = `
                 <h3 style="margin-bottom:8px;">${issue.vendor} — ${issue.system}</h3>
-                <p style="color:var(--text-light); margin-bottom:8px;">Status: <strong>${issue.status}</strong> • Impact: <strong>${issue.impact}</strong></p>
+                <p style="color:var(--text-light); margin-bottom:8px;">Date: <strong>${issueDate}</strong> • Status: <strong>${issue.status}</strong> • Impact: <strong>${issue.impact}</strong></p>
                 <p><strong>Description</strong><br/>${issue.description}</p>
                 <p><strong>Cause</strong><br/>${issue.cause}</p>
                 <p><strong>RCA</strong><br/>${issue.rca}</p>
