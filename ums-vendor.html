@@ -1278,6 +1278,7 @@
                                 <thead>
                                     <tr>
                                         <th>Identification</th>
+                                        <th>Date</th>
                                         <th>Urgency</th>
                                         <th>Items Affected</th>
                                         <th>Immediate Action</th>
@@ -2717,12 +2718,12 @@
             document.getElementById('documentsList').innerHTML = html || '<div style="text-align: center; padding: 40px; color: var(--text-light);">No documents yet.</div>';
         }
 
-        // ==================== INCIDENTS ====================
         function loadIncidents() {
             const incidents = DataManager.getIncidents();
             const html = incidents.map(i => `
                 <tr>
                     <td><strong>${i.identification}</strong></td>
+                    <td>${new Date(i.createdAt).toLocaleDateString()}</td>
                     <td>${i.urgency}</td>
                     <td>${i.itemsAffected || '-'}</td>
                     <td>${(i.immediateAction || '-').substring(0,40)}...</td>
@@ -2735,7 +2736,7 @@
                 </tr>
             `).join('');
 
-            document.getElementById('incidentsBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:40px;">No incidents recorded.</td></tr>';
+            document.getElementById('incidentsBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;padding:40px;">No incidents recorded.</td></tr>';
         }
 
         function openIncidentModal() {
@@ -2802,9 +2803,11 @@
             const inc = incidents.find(x => x.id === id);
             if (!inc) return;
             const body = document.getElementById('viewIncidentBody');
+            const incidentDate = new Date(inc.createdAt).toLocaleDateString();
             body.innerHTML = `
                 <h3 style="margin-bottom:8px;">UMS KENYA \u2013 INCIDENT Report</h3>
                 <p><strong>Identification:</strong> ${inc.identification}</p>
+                <p><strong>Date:</strong> ${incidentDate}</p>
                 <p><strong>Urgency:</strong> ${inc.urgency}</p>
                 <p><strong>Description:</strong><br/>${inc.description}</p>
                 <p><strong>Items / Assets Affected:</strong><br/>${inc.itemsAffected || '-'}</p>
