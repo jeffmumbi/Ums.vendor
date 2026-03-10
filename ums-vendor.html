@@ -1865,7 +1865,8 @@
                         rca: 'Connection pool size was insufficient',
                         status: 'Resolved',
                         resolution: 'Increased connection pool size',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        createdBy: 1
                     },
                     {
                         id: 2,
@@ -1878,7 +1879,8 @@
                         rca: 'ISP bandwidth configuration issue',
                         status: 'In Progress',
                         resolution: 'Rebalancing bandwidth',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        createdBy: 1
                     }
                 ];
             },
@@ -1895,6 +1897,7 @@
                         expiryTime: '09:00',
                         notes: 'Critical system',
                         notified: false
+                        ,createdBy: 1
                     }
                 ];
             },
@@ -1976,7 +1979,8 @@
                         escalation: 'No',
                         rootCause: 'Condensation from AC unit',
                         resolutionStatus: 'Resolved',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        createdBy: 1
                     }
                 ];
             },
@@ -3496,7 +3500,10 @@
             const data = {
                 issues: DataManager.getIssues(),
                 passwords: DataManager.getPasswords(),
-                documents: DataManager.getDocuments()
+                documents: DataManager.getDocuments(),
+                incidents: DataManager.getIncidents(),
+                users: DataManager.getUsers(),
+                currentUser: DataManager.getCurrentUser()
             };
 
             const json = JSON.stringify(data, null, 2);
@@ -3507,6 +3514,27 @@
             a.download = 'ums-vendor-backup.json';
             a.click();
             showToast('Data exported!');
+        }
+
+        function importAllData(file) {
+            if (!file) return showToast('No file selected');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.users) localStorage.setItem('users', JSON.stringify(data.users));
+                    if (data.issues) localStorage.setItem('issues', JSON.stringify(data.issues));
+                    if (data.passwords) localStorage.setItem('passwords', JSON.stringify(data.passwords));
+                    if (data.documents) localStorage.setItem('documents', JSON.stringify(data.documents));
+                    if (data.incidents) localStorage.setItem('incidents', JSON.stringify(data.incidents));
+                    if (data.currentUser) localStorage.setItem('currentUser', JSON.stringify(data.currentUser));
+                    showToast('Data imported. Reloading...');
+                    setTimeout(() => location.reload(), 900);
+                } catch (err) {
+                    showToast('Import failed: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
         }
 
         // Load dark mode preference
