@@ -11,10 +11,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK (compat version for ease of use) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+    
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Firebase Integration Bridge -->
+    <script src="firebase-integration.js"></script>
     
     <style>
         * {
@@ -3501,6 +3515,19 @@
             deferredInstallPrompt = null;
             if (installBtnEl) installBtnEl.style.display = 'none';
             showToast('App installed');
+        });
+
+        // Initialize Firebase on app load
+        window.addEventListener('load', async () => {
+            console.log('Initializing Firebase...');
+            const firebaseReady = await initializeFirebase();
+            if (firebaseReady) {
+                console.log('✅ Firebase ready');
+                // Optional: Migrate data from localStorage to Firebase on first run
+                // This can be triggered later by user action
+            } else {
+                console.warn('⚠️ Firebase initialization failed. App will use localStorage fallback.');
+            }
         });
 
         // Register service worker

@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#1e3a8a">
     <title>UMS Vendor Tracker</title>
     <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -1472,6 +1473,32 @@
                                     </div>
                                 </form>
                             </div>
+                            <div class="card" style="margin-top:16px;">
+                                <div class="card-header">
+                                    <h2 class="card-title">Supabase (Optional)</h2>
+                                </div>
+                                <div style="padding:16px;">
+                                    <p style="font-size:13px; color:var(--text-light);">Configure Supabase to persist data remotely. Provide your Supabase URL and anon key below. Do NOT share your anon key publicly.</p>
+                                    <div class="form-row full">
+                                        <label class="form-label">Supabase URL</label>
+                                        <input type="text" class="form-input" id="supabaseUrl" placeholder="https://xyzcompany.supabase.co">
+                                    </div>
+                                    <div class="form-row full">
+                                        <label class="form-label">Supabase ANON Key</label>
+                                        <input type="text" class="form-input" id="supabaseKey" placeholder="anon key">
+                                    </div>
+                                    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px;">
+                                        <button class="btn btn-secondary" onclick="testSupabaseConnection()">Test Connection</button>
+                                        <button class="btn btn-primary" onclick="saveSupabaseConfig()">Save Config</button>
+                                    </div>
+                                    <hr style="margin:12px 0;">
+                                    <div style="display:flex; gap:8px; justify-content:flex-end;">
+                                        <button class="btn btn-secondary" onclick="pullSupabaseToLocal()">Pull Supabase → Local</button>
+                                        <button class="btn btn-primary" onclick="pushLocalToSupabase()">Push Local → Supabase</button>
+                                    </div>
+                                    <p style="font-size:12px; color:var(--text-light); margin-top:8px;">Use Pull to overwrite local storage with Supabase data. Use Push to upload local data to Supabase (upsert).</p>
+                                </div>
+                            </div>
                         </div>
                 </div>
             </div>
@@ -2271,6 +2298,54 @@
 
             getNotifications() {
                 return JSON.parse(localStorage.getItem('notifications') || '[]');
+            },
+
+            // Supabase helpers - optional remote persistence
+            getSupabaseClient() {
+                try {
+                    const cfg = JSON.parse(localStorage.getItem('supabaseConfig') || 'null');
+                    if (!cfg || !cfg.url || !cfg.key) return null;
+                    if (window.supabase && window.supabase.createClient) {
+                        return window.supabase.createClient(cfg.url, cfg.key);
+                    }
+                    return null;
+                } catch (e) {
+                    return null;
+                }
+            },
+
+            async pushAllToSupabase() {
+                const supabase = this.getSupabaseClient();
+                if (!supabase) throw new Error('Supabase not configured');
+
+                const tables = {
+                    users: this.getUsers(),
+                    issues: this.getIssues(),
+                    incidents: this.getIncidents(),
+                    passwords: this.getPasswords(),
+                    documents: this.getDocuments(),
+                    notifications: this.getNotifications()
+                };
+
+                for (const [table, rows] of Object.entries(tables)) {
+                    if (!rows || !rows.length) continue;
+                    const { data, error } = await supabase.from(table).upsert(rows, { onConflict: 'id' });
+                    if (error) console.warn('Supabase upsert error', table, error.message || error);
+                }
+                return true;
+            },
+
+            async pullAllFromSupabase() {
+                const supabase = this.getSupabaseClient();
+                if (!supabase) throw new Error('Supabase not configured');
+
+                const tables = ['users','issues','incidents','passwords','documents','notifications'];
+                for (const t of tables) {
+                    const { data, error } = await supabase.from(t).select('*');
+                    if (error) console.warn('Supabase select error', t, error.message || error);
+                    else if (Array.isArray(data)) localStorage.setItem(t, JSON.stringify(data));
+                }
+                return true;
             },
 
             clearNotifications() {
@@ -3806,6 +3881,16 @@
             document.getElementById('profileEmail').value = user.username.includes('@') ? user.username : user.username + '@company.com';
             document.getElementById('profileFullName').value = user.name || '';
             document.getElementById('profilePhone').value = user.phone || '';
+            // load supabase config into settings UI
+            try {
+                const cfg = JSON.parse(localStorage.getItem('supabaseConfig') || 'null');
+                if (cfg) {
+                    document.getElementById('supabaseUrl').value = cfg.url || '';
+                    document.getElementById('supabaseKey').value = cfg.key || '';
+                }
+            } catch (e) {
+                // ignore
+            }
         }
 
         function saveProfile(e) {
@@ -3818,6 +3903,53 @@
             DataManager.setCurrentUser(user);
             document.getElementById('userName').textContent = user.name;
             showToast('Profile updated');
+        }
+
+        // ================= SUPABASE UI ACTIONS =================
+        function saveSupabaseConfig() {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            if (!url || !key) return showToast('Please provide both Supabase URL and ANON key');
+            localStorage.setItem('supabaseConfig', JSON.stringify({ url, key }));
+            showToast('Supabase configuration saved');
+        }
+
+        async function testSupabaseConnection() {
+            try {
+                const cfg = JSON.parse(localStorage.getItem('supabaseConfig') || 'null') || { url: document.getElementById('supabaseUrl').value.trim(), key: document.getElementById('supabaseKey').value.trim() };
+                if (!cfg || !cfg.url || !cfg.key) return showToast('Provide Supabase URL and key first');
+                const client = window.supabase.createClient(cfg.url, cfg.key);
+                const { data, error } = await client.from('users').select('id').limit(1);
+                if (error) return showToast('Connection failed: ' + (error.message || error));
+                showToast('Supabase connection OK');
+            } catch (err) {
+                showToast('Connection test failed');
+                console.warn(err);
+            }
+        }
+
+        async function pushLocalToSupabase() {
+            try {
+                showToast('Pushing local data to Supabase...');
+                await DataManager.pushAllToSupabase();
+                showToast('Push completed');
+            } catch (err) {
+                console.error(err);
+                showToast('Push failed: ' + (err.message || err));
+            }
+        }
+
+        async function pullSupabaseToLocal() {
+            try {
+                if (!confirm('This will overwrite local data with Supabase data. Continue?')) return;
+                showToast('Pulling Supabase data to local...');
+                await DataManager.pullAllFromSupabase();
+                showToast('Pull completed. Reloading...');
+                setTimeout(() => location.reload(), 900);
+            } catch (err) {
+                console.error(err);
+                showToast('Pull failed: ' + (err.message || err));
+            }
         }
 
         function changePassword(e) {
